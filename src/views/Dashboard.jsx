@@ -1,39 +1,22 @@
 import React, { Component } from "react";
 
-import { Line, Bar } from "react-chartjs-2";
-// import LineGraph from "../components/Graphs/LineGraph
 import MultiSeriesAreaChart from "../components/Graphs/MuLtiSeriesAreaChart"
 import MuLtiSeriesAreaChartGS15Wrapper from "../components/Graphs/MuLtiSeriesAreaChartGS_15Wrapper"
-// import axios from 'axios'
 import { InflowsContext } from "../components/Context/context"
 import {
-  Button,
-  // ButtonGroup,
   Card,
   CardHeader,
   CardBody,
   CardTitle,
   DropdownToggle,
   DropdownMenu,
-  DropdownItem,
   UncontrolledDropdown,
-  Label,
-  FormGroup,
   Input,
-  Table,
   Row,
   InputGroupText,
   Col,
-  UncontrolledTooltip
 } from "reactstrap";
 
-// core components
-import {
-  // chartExample1,
-  chartExample2,
-  chartExample3,
-  chartExample4
-} from "../variables/charts";
 class Dashboard extends Component {
   static contextType = InflowsContext
   constructor(props) {
