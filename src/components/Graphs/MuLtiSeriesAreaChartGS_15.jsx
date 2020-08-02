@@ -18,7 +18,7 @@ class MultiSeriesAreaChartGs15 extends Component {
                 labelFontColor: "#9a9a9a",
                 // minimum: 1004,
                 maximum: 20,
-                title: "m*3/s"
+                title: "m³/s"
             },
             axisX: {
                 includeZero: true,

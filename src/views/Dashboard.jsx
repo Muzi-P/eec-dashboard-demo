@@ -111,7 +111,7 @@ class Dashboard extends Component {
             </Col>
           </Row>
           <MuLtiSeriesAreaChartGS15Wrapper />
-          <Row>
+          {/* <Row>
             <Col lg="4">
               <Card className="card-chart">
                 <CardHeader>
@@ -500,7 +500,7 @@ class Dashboard extends Component {
                 </CardBody>
               </Card>
             </Col>
-          </Row>
+          </Row> */}
         </div>
       </>
     );

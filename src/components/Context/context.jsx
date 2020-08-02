@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import defaultModel from "../../model/models";
+import weekDayGenSchedule from '../../data/weekDayGenSchedule.json'
 
 const InflowsContext = React.createContext();
 
@@ -15,7 +16,10 @@ class InflowsProvider extends Component {
             years: [],
             config : {
                 headers: { Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZjIzY2E3ODY4ZDU3YjViZWM1NjU0ZTYiLCJpYXQiOjE1OTYxODE4NDJ9.KpDl4sTqkVG5zOvXHyACNbIB8VWVjZAk16nJok0tuHw' }
-            }
+            },
+            date: `${new Date().toDateString()} ${new Date().toTimeString()}`,
+            months : ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+            weekDayGenSchedule: weekDayGenSchedule
         }
     }
     componentDidMount() {
@@ -51,7 +55,6 @@ class InflowsProvider extends Component {
         
     }
     populateGS15Model = (reviewYear) => {
-        const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
         let singleYearInflows = this.state.inflows.filter(inflow => inflow.Day_of_Input.includes(reviewYear))
         let yearlyGS15Inflows = []
         let dataGS15 = []
@@ -62,12 +65,12 @@ class InflowsProvider extends Component {
             })
             let average = this.gs15MonthlyInflowsAverage(monthlyGS15)
             let object = {}
-            object[months[i]] = monthlyGS15;
+            object[this.state.months[i]] = monthlyGS15;
             object['average'] = parseFloat(average);
             yearlyGS15Inflows.push(object)
 
             let dataPointObject = {};
-            dataPointObject['label'] = months[i];
+            dataPointObject['label'] = this.state.months[i];
             dataPointObject['y'] = parseFloat(average);
             dataGS15.push(dataPointObject)
 
