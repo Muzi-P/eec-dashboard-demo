@@ -89,7 +89,7 @@ class InflowsProvider extends Component {
 
         // Current model
         let singleYearInflows = this.state.inflows.filter(inflow => inflow.Day_of_Input.includes(reviewYear))
-        this.postToNode(singleYearInflows)
+        // this.postToNode(singleYearInflows)
         let result = {}
         let dataPoints = singleYearInflows.map(inflow => {
             let year = inflow.Day_of_Input.split('-')
