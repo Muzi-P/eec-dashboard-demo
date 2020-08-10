@@ -30,7 +30,7 @@ export default class MuLtiSeriesAreaChartGS15Wrapper extends Component {
     
     handleChange = (e) => {
         this.setState({ checkboxChecked: e.target.checked })
-        this.context.handleGS15ReviewYear(e.target.value);
+        this.context.handleGS15ReviewYear(e.target.value)
     }
     render() {
         const { gs15ReviewYears } = this.context

@@ -16,9 +16,9 @@ export default class WeekDayGenSchedule extends Component {
   }
 
   render() {
-    const {weekDayGenSchedule} = this.context
+    const {currentSchedule} = this.context
 
-    let tableData = weekDayGenSchedule.map((item, index) => {
+    let tableData = currentSchedule.map((item, index) => {
       return <tr key={index} onClick={() => this.hadleRowClick(item)}>
       <td>{item.Time}</td>
       <td>{item.Period}</td>

@@ -37,9 +37,14 @@ class GenerateSchedule extends Component {
   }
   
   handleChange = date => {
+    this.context.handleForecastDateChange(date)
     this.setState({
       startDate: date
     })
+  }
+
+  componentDidMount = () => {
+    this.context.handleForecastDateChange(this.state.startDate)
   }
   handleInputChange = (e) => {
     this.setState({
@@ -49,6 +54,7 @@ class GenerateSchedule extends Component {
 
   handleGenerateSchedule = () => {
     console.log(this.state)
+    this.context.generateSchedule()
   }
 
   render() {
