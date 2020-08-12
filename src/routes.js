@@ -2,6 +2,7 @@ import Dashboard from "./views/Dashboard";
 import Notifications from "./views/Notifications.jsx";
 import UserProfile from "./views/UserProfile.jsx";
 import GenerateSchedule from "./views/GenarateSchedule";
+import DrainageModels from "./views/DrainageModel";
 
 var routes = [
   {
@@ -35,6 +36,14 @@ var routes = [
     icon: "tim-icons icon-single-02",
     component: UserProfile,
     layout: "/admin"
-  }
+  },
+  {
+    path: "/drainage-models",
+    name: "Drainage Models",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: "tim-icons icon-calendar-60",
+    component: DrainageModels,
+    layout: "/admin"
+  },
 ];
 export default routes;

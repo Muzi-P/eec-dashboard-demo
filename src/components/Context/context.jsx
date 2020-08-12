@@ -12,8 +12,11 @@ class InflowsProvider extends Component {
         super()
         this.state = {
             inflows: [],
+            models: [],
+            modelNames: [],
             currentYear: new Date().getFullYear(),
             reviewYears: [],
+            reviewModels: [],
             gs15ReviewYears: [`${new Date().getFullYear()}`],
             years: [],
             config : {
@@ -28,13 +31,23 @@ class InflowsProvider extends Component {
         }
     }
     componentDidMount() {
-        axios.get('https://inflows-api.herokuapp.com/inflows', this.state.config)
-            .then(res => {
-                this.setState({ inflows: res.data })
-                this.getAllYears(res.data)
-            })
+        this.getAllInflows()
+        this.getAllModels()
     }
-
+    getAllInflows = () => {
+        axios.get('https://inflows-api.herokuapp.com/inflows', this.state.config)
+        .then(res => {
+            this.setState({ inflows: res.data })
+            this.getAllYears(res.data)
+        })
+    }
+    getAllModels = () => {
+        axios.get('https://inflows-api.herokuapp.com/models', this.state.config)
+        .then(res => {
+            this.setState({ models: res.data })
+            this.getAllModelNames(res.data)
+        })
+    }
     getAllYears = (inflows) => {
         let years = []
         inflows.forEach(item => {
@@ -44,6 +57,14 @@ class InflowsProvider extends Component {
         this.setState({years})
 
         // this.postToNode(inflows)
+    }
+    getAllModelNames = (models) => {
+        let modelNames = []
+        models.forEach(item => {
+            modelNames.push(item.Model_Name)
+        })
+        this.setState({modelNames})
+
     }
     
     postToNode (inflows) {
@@ -122,6 +143,14 @@ class InflowsProvider extends Component {
         }
 
     }
+
+    handleReviewModel = (model) => {
+        if (this.state.reviewModels.includes(model)) {
+            this.setState({ reviewModels: this.state.reviewModels.filter(item => item !== model) })
+        } else {
+            this.setState({ reviewModels: [...this.state.reviewModels, model] })
+        }
+    }
     handleGS15ReviewYear = (year) => {
         if (this.state.gs15ReviewYears.includes(year)) {
             this.setState({ gs15ReviewYears: this.state.gs15ReviewYears.filter(item => item !== year) })
@@ -130,40 +159,53 @@ class InflowsProvider extends Component {
         }
 
     }
-
-    populateDataPoints = () => {
+    populateModelDataPoints = () => {
+        let reviewModelsDataPoints = this.state.reviewModels.map(model => {
+            const {min, max, opt} = this.generatePoints(model)
+            let singleYearDataPoint = this.singleModelDataPoint(model,opt,min,max)
+            return singleYearDataPoint
+        })
+        let data = this.singleModelDataPoint('model', defaultModel.defaultModel.opt(), defaultModel.defaultModel.min(), defaultModel.defaultModel.max())
+        if (reviewModelsDataPoints[0]) return reviewModelsDataPoints.flat()
+        return data 
+    }
+    singleModelDataPoint = (name,opt,min,max) => {
         let data = [
             {
                 type: "spline",
-                name: "model-opt",
+                name: `${name}-opt`,
                 showInLegend: true,
                 xValueFormatString: "DD MMM",
                 yValueFormatString: "#,###.## m.a.s.l",
-                dataPoints: defaultModel.defaultModel.opt()
+                dataPoints: opt
             },
             {
                 type: "spline",
-                name: "model-min",
+                name: `${name}-min`,
                 showInLegend: true,
                 xValueFormatString: "DD MMM",
                 yValueFormatString: "#,###.## m.a.s.l",
-                dataPoints: defaultModel.defaultModel.min()
+                dataPoints: min
             },
             {
                 type: "spline",
-                name: "model-max",
+                name: `${name}-max`,
                 showInLegend: true,
                 xValueFormatString: "DD MMM",
                 yValueFormatString: "#,###.## m.a.s.l",
-                dataPoints: defaultModel.defaultModel.max()
+                dataPoints: max
             }
         ]
 
+        return data
+    }
+    populateDataPoints = () => {
+        
+        let data = this.populateModelDataPoints()
         let reviewYearsDataPoints = this.state.reviewYears.map(year => {
             let singleYearDataPoint = this.singleYearDataPoint(year)
             return singleYearDataPoint
         })
-
         if (reviewYearsDataPoints.length === 0) {
             return data
         } else {
@@ -172,6 +214,24 @@ class InflowsProvider extends Component {
 
         }
 
+    }
+    generatePoints = (modelName) => {
+        let currentModel = this.state.models.filter(model => model.Model_Name === modelName)
+        const {Min, Max, Opt} = currentModel[0]
+        return {
+            min: this.generateModelDataPoint(Min),
+            max: this.generateModelDataPoint(Max),
+            opt: this.generateModelDataPoint(Opt)
+        }
+    }
+    generateModelDataPoint = (arr) => {
+        let result = {}
+        let dataPoints = arr.map(item => {
+            let data = { x: new Date(item.x), y: parseFloat(item.y) }
+            result = { ...data }
+            return result
+        })
+        return dataPoints
     }
     populateGS15DataPoints = () => {
         let reviewYearsGS15DataPoints = this.state.gs15ReviewYears.map(year => {
@@ -190,7 +250,6 @@ class InflowsProvider extends Component {
             showInLegend: true,
             xValueFormatString: "DD MMM",
             yValueFormatString: "#,###.## m.a.s.l",
-            xValueType: "dateTime",
             dataPoints: this.populateModel(year)
         }
         return data
@@ -202,7 +261,6 @@ class InflowsProvider extends Component {
             showInLegend: true,
             xValueFormatString: "MMM",
             yValueFormatString: "#,###.## m^3/s",
-            // xValueType: "dateTime",
             dataPoints: this.populateGS15Model(year)
         }
         return data
@@ -238,7 +296,7 @@ class InflowsProvider extends Component {
 
     render() {
         return (
-            <InflowsContext.Provider value={{ ...this.state, getData: this.populateModel, getDefaultModel: this.getDefaultModel, changeForecastYear: this.changeForecastYear, handleReviewYear: this.handleReviewYear, populateDataPoints: this.populateDataPoints, handleGS15ReviewYear: this.handleGS15ReviewYear, changeGS15ForecastYear: this.changeGS15ForecastYear, populateGS15DataPoints: this.populateGS15DataPoints, handleForecastDateChange: this.handleForecastDateChange, generateSchedule: this.generateSchedule }}>
+            <InflowsContext.Provider value={{ ...this.state, getData: this.populateModel, getDefaultModel: this.getDefaultModel, changeForecastYear: this.changeForecastYear, handleReviewYear: this.handleReviewYear, populateDataPoints: this.populateDataPoints, handleGS15ReviewYear: this.handleGS15ReviewYear, changeGS15ForecastYear: this.changeGS15ForecastYear, populateGS15DataPoints: this.populateGS15DataPoints, handleForecastDateChange: this.handleForecastDateChange, generateSchedule: this.generateSchedule, handleReviewModel: this.handleReviewModel }}>
                 {this.props.children}
             </InflowsContext.Provider>
         )

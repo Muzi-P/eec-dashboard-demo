@@ -17,7 +17,7 @@ class MultiSeriesAreaChart extends Component {
                 gridColor: "rgba(29,140,248,0.2)",
                 gridThickness: 2,
                 labelFontColor: "#9a9a9a",
-                minimum: 1000,
+                minimum: 995,
                 maximum: 1017,
                 title: "m.a.s.l"
             },
@@ -27,6 +27,8 @@ class MultiSeriesAreaChart extends Component {
                 gridThickness: 2,
                 valueFormatString: "MMM",
                 labelFontColor: "#9a9a9a",
+                interval:1,
+                intervalType: "month"
             },
             toolTip: {
                 shared: true
@@ -37,9 +39,7 @@ class MultiSeriesAreaChart extends Component {
         return (
             <div>
                 <CanvasJSChart options={options}
-                /* onRef={ref => this.chart = ref} */
                 />
-                {/*You can get reference to the chart instance as shown above using onRef. This allows you to access all chart properties and methods*/}
             </div>
         );
     }
