@@ -4,6 +4,7 @@ import defaultModel from "../../model/models";
 import weekDayGenSchedule from '../../data/weekDayGenSchedule.json'
 import weekEndGenSchedule from '../../data/weekEndGenSchedule.json'
 import weekSunGenSchedule from '../../data/weekSunGenSchedule.json'
+import functions from '../../utils/functions'
 
 const InflowsContext = React.createContext();
 
@@ -17,6 +18,9 @@ class InflowsProvider extends Component {
             currentYear: new Date().getFullYear(),
             reviewYears: [],
             reviewModels: [],
+            utils: functions,
+            selectedModel: [],
+            currentModel: [],
             gs15ReviewYears: [`${new Date().getFullYear()}`],
             years: [],
             config : {
@@ -35,14 +39,14 @@ class InflowsProvider extends Component {
         this.getAllModels()
     }
     getAllInflows = () => {
-        axios.get('https://inflows-api.herokuapp.com/inflows', this.state.config)
+        axios.get(`${process.env.REACT_APP_API}/inflows`, this.state.config)
         .then(res => {
             this.setState({ inflows: res.data })
             this.getAllYears(res.data)
         })
     }
     getAllModels = () => {
-        axios.get('https://inflows-api.herokuapp.com/models', this.state.config)
+        axios.get(`${process.env.REACT_APP_API}/models`, this.state.config)
         .then(res => {
             this.setState({ models: res.data })
             this.getAllModelNames(res.data)
@@ -73,7 +77,7 @@ class InflowsProvider extends Component {
         }
         inflows.forEach (item => {
             axios.post( 
-                'https://inflows-api.herokuapp.com/inflows',
+                `${process.env.REACT_APP_API}/inflows`,
                 item,
                 config
               ).then(res =>console.log(res)).catch(res => console.log(res));
@@ -294,9 +298,86 @@ class InflowsProvider extends Component {
         this.setState({currentSchedule})
     } 
 
+
+
+    /********Drainage model*****/
+    handleDrainageModelChange = (modelName) => {
+        this.setState({ reviewModels: [modelName] })
+        let selectedModel = this.state.models.filter(model => model.Model_Name === modelName)
+        this.setState({currentModel: selectedModel})
+        let model = []
+        selectedModel[0].Max.forEach((item,index) => {
+            let volume = this.state.utils.methods.levelToVol(parseInt(selectedModel[0].Opt[index].y))
+            let perc = this.state.utils.methods.volToPerc(volume)
+            let singleMonth = {
+                month: item.month,
+                max: item.y,
+                min: selectedModel[0].Min[index].y,
+                opt: selectedModel[0].Opt[index].y,
+                perc: perc
+            }
+            model.push(singleMonth)
+        })
+        this.setState({selectedModel: model})
+    }
+
+    /*updating models */
+    updateModel = (edit, current) => {
+        let currentModel = current
+        edit.forEach((item,index) => {
+            currentModel[0].Min[index].y = item.min
+            currentModel[0].Max[index].y = item.max
+            currentModel[0].Opt[index].y = item.opt
+        })
+        this.updateModelApi (currentModel)
+    }
+    updateModelApi = (model) => {
+        axios.patch( 
+            `${process.env.REACT_APP_API}/models/${model[0].Model_Name}`,
+            model[0],
+            this.state.config
+          ).then(this.getAllModels()).catch(res => console.log(res));
+    }
+
+    /*adding a new  model */
+    newModel = (model, modelName) => {
+        let newModel = this.state.models[0]
+        const {Max, Min, Opt} = newModel
+        model.forEach((item, index) => {
+            Max[index].y = item.max
+            Min[index].y = item.min
+            Opt[index].y = item.opt
+            delete  Max[index]._id
+            delete  Min[index]._id
+            delete  Opt[index]._id
+        })
+        newModel.Model_Name = modelName
+        delete newModel._id
+        delete newModel.createdAt
+        delete newModel.updatedAt
+        delete newModel._v
+        this.newModelApi(newModel)
+    }
+    newModelApi = (model) => {
+        axios.post( 
+            `${process.env.REACT_APP_API}/models`,
+            model,
+            this.state.config
+          ).then(this.getAllModels())
+          .catch(res => console.log(res));
+    }
+
+    /*delete a model */
+    deleteModel = (modelName) => {
+        axios.delete( 
+            `${process.env.REACT_APP_API}/models/${modelName}`,
+            this.state.config
+          ).then(this.handleDrainageModelChange(this.state.modelNames[0]))
+          .catch(res => console.log(res));
+    }
     render() {
         return (
-            <InflowsContext.Provider value={{ ...this.state, getData: this.populateModel, getDefaultModel: this.getDefaultModel, changeForecastYear: this.changeForecastYear, handleReviewYear: this.handleReviewYear, populateDataPoints: this.populateDataPoints, handleGS15ReviewYear: this.handleGS15ReviewYear, changeGS15ForecastYear: this.changeGS15ForecastYear, populateGS15DataPoints: this.populateGS15DataPoints, handleForecastDateChange: this.handleForecastDateChange, generateSchedule: this.generateSchedule, handleReviewModel: this.handleReviewModel }}>
+            <InflowsContext.Provider value={{ ...this.state, getData: this.populateModel, getDefaultModel: this.getDefaultModel, changeForecastYear: this.changeForecastYear, handleReviewYear: this.handleReviewYear, populateDataPoints: this.populateDataPoints, handleGS15ReviewYear: this.handleGS15ReviewYear, changeGS15ForecastYear: this.changeGS15ForecastYear, populateGS15DataPoints: this.populateGS15DataPoints, handleForecastDateChange: this.handleForecastDateChange, generateSchedule: this.generateSchedule, handleReviewModel: this.handleReviewModel, handleDrainageModelChange: this.handleDrainageModelChange, updateModel: this.updateModel, newModel: this.newModel, deleteModel: this.deleteModel, getAllModels: this.getAllModels }}>
                 {this.props.children}
             </InflowsContext.Provider>
         )
