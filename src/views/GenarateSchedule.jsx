@@ -5,6 +5,7 @@ import DatePicker from "react-datepicker";
  
 import "react-datepicker/dist/react-datepicker.css";
 import PreviousInflows from './PreviousInflows';
+import DailySummary from './Summary';
 import WeekDayGenSchedule from './schedules/WeekDayGenSchedule'
 // reactstrap components
 import {
@@ -32,7 +33,8 @@ class GenerateSchedule extends Component {
       Ferreira: '',
       GS_15: '',
       GS_2: '',
-      valid: true
+      valid: true,
+      model: ''
     }
   }
   
@@ -53,8 +55,14 @@ class GenerateSchedule extends Component {
   }
 
   handleGenerateSchedule = () => {
-    console.log(this.state)
-    this.context.generateSchedule()
+    if (this.state.model === '') {
+      this.setState({model: this.context.modelNames[0]}, this.generateSchedule)
+    } else {
+      this.generateSchedule()
+    }
+  }
+  generateSchedule = () => {
+    this.context.generateSchedule(this.state)
   }
 
   render() {
@@ -63,7 +71,7 @@ class GenerateSchedule extends Component {
       <>
         <div className="content">
           <Row>
-            <Col md="7">
+            <Col md="6">
               <Card>
                 <CardHeader>
                   <h4 className="title">ENTER INFLOWS</h4>
@@ -81,6 +89,18 @@ class GenerateSchedule extends Component {
                             selected={this.state.startDate}
                             onChange={this.handleChange}
                           />
+                        </FormGroup>
+                      </Col>
+                      <Col className="pr-md-1" md="3">
+                        <FormGroup>
+                          <label htmlFor="exampleInputEmail1">
+                            Select Model:
+                          </label>
+                          <Input type="select" name="select" id="model" onChange={this.handleInputChange}>
+                            {this.context.modelNames.map((model, index) => {
+                                  return <option key={index}>{model}</option>
+                              })}
+                          </Input>
                         </FormGroup>
                       </Col>
                     </Row>
@@ -126,7 +146,7 @@ class GenerateSchedule extends Component {
                       </Col>
                     </Row>
                     <Row>
-                      <Col className="pr-md-1" md="3">
+                      <Col className="pr-md-1" md="4">
                         <FormGroup>
                           <label>Mkinkomo Reservoir Daily Level</label>
                           <Input
@@ -179,7 +199,8 @@ class GenerateSchedule extends Component {
            <PreviousInflows/>
           </Row>
           <Row>
-            <WeekDayGenSchedule/>
+            <WeekDayGenSchedule date = {this.state.startDate} />
+            <DailySummary />
           </Row>
         </div>
       </>

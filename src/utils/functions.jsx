@@ -208,9 +208,212 @@ const methods = {
   volToPerc: (volume) => {
       
       return ((volume / 23600000)* 100).toFixed(2)
-  }
-}
+  },
+  /*****Ezulwini Peak *********/ 
+  ezulwiniPeakFullLoad: (schedule) => {
+    schedule.forEach(item => {
+      if (item.Period === 'Peak') item.EZULWINI = '20'
+    })
+    return schedule
+  },
+  ezulwiniPeakHalfLoad: (schedule) => {
+    schedule.forEach(item => {
+      if (item.Period === 'Peak') item.EZULWINI = '10'
+    })
+    return schedule
+  },
+  ezulwiniPeakShutDown: (schedule) => {
+    schedule.forEach(item => {
+      if (item.Period === 'Peak') item.EZULWINI = '0'
+    })
+    return schedule
+  },
 
+  /*****Ezulwini Stnd *********/ 
+  ezulwiniStandardFullLoad: (schedule) => {
+    schedule.forEach(item => {
+      if (item.Period === 'Standard') item.EZULWINI = '20'
+    })
+    return schedule
+  },
+  ezulwiniStandardHalfLoad: (schedule) => {
+    schedule.forEach(item => {
+      if (item.Period === 'Standard') item.EZULWINI = '10'
+    })
+    return schedule
+  },
+  ezulwiniStandardShutDown: (schedule) => {
+    schedule.forEach(item => {
+      if (item.Period === 'Standard') item.EZULWINI = '0'
+    })
+    return schedule
+  },
+
+  /*****Ezulwini Off-Peak *********/ 
+  ezulwiniOffPeakFullLoad: (schedule) => {
+    schedule.forEach(item => {
+      if (item.Period === 'Off-Peak') item.EZULWINI = '20'
+    })
+    return schedule
+  },
+  ezulwiniOffPeakHalfLoad: (schedule) => {
+    schedule.forEach(item => {
+      if (item.Period === 'Off-Peak') item.EZULWINI = '10'
+    })
+    return schedule
+  },
+  ezulwiniOffPeakShutDown: (schedule) => {
+    schedule.forEach(item => {
+      if (item.Period === 'Off-Peak') item.EZULWINI = '0'
+    })
+    return schedule
+  },
+
+  /*****Ezulwini ShutDown *********/ 
+  ezulwiniShutDown: (schedule) => {
+    schedule.forEach(item => {
+      item.EZULWINI = '0'
+    })
+    return schedule
+  },
+
+  /*****Edwaleni Peak *********/ 
+  edwaleniPeakFullLoad: (schedule) => {
+    schedule.forEach(item => {
+      if (item.Period === 'Peak') item.EDWALENI = '14.6'
+    })
+    return schedule
+  },
+  edwaleniPeakHalfLoad: (schedule) => {
+    schedule.forEach(item => {
+      if (item.Period === 'Peak') item.EDWALENI = '5'
+    })
+    return schedule
+  },
+  edwaleniPeakShutDown: (schedule) => {
+    schedule.forEach(item => {
+      if (item.Period === 'Peak') item.EDWALENI = '0'
+    })
+    return schedule
+  },
+
+   /*****Edwaleni Stnd *********/ 
+   edwaleniStandardFullLoad: (schedule) => {
+    schedule.forEach(item => {
+      if (item.Period === 'Standard') item.EDWALENI = '14.6'
+    })
+    return schedule
+  },
+  edwaleniStandardHalfLoad: (schedule) => {
+    schedule.forEach(item => {
+      if (item.Period === 'Standard') item.EDWALENI = '5'
+    })
+    return schedule
+  },
+  edwaleniStandardShutDown: (schedule) => {
+    schedule.forEach(item => {
+      if (item.Period === 'Standard') item.EDWALENI = '0'
+    })
+    return schedule
+  },
+
+  /*****Edwaleni Off-Peak *********/ 
+  edwaleniOffPeakFullLoad: (schedule) => {
+    schedule.forEach(item => {
+      if (item.Period === 'Off-Peak') item.EDWALENI = '14.6'
+    })
+    return schedule
+  },
+  edwaleniOffPeakHalfLoad: (schedule) => {
+    schedule.forEach(item => {
+      if (item.Period === 'Off-Peak') item.EDWALENI = '5'
+    })
+    return schedule
+  },
+  edwaleniOffPeakShutDown: (schedule) => {
+    schedule.forEach(item => {
+      if (item.Period === 'Off-Peak') item.EDWALENI = '0'
+    })
+    return schedule
+  },
+
+  /*****Edwaleni ShutDown *********/ 
+  edwaleniShutDown: (schedule) => {
+    schedule.forEach(item => {
+      item.EDWALENI = '0'
+    })
+    return schedule
+  },
+
+  /*****Maguduza Peak *********/ 
+  maguduzaPeakFullLoad: (schedule) => {
+    schedule.forEach(item => {
+      if (item.Period === 'Peak') item.MAGUDUZA = '5.6'
+    })
+    return schedule
+  },
+  maguduzaPeakHalfLoad: (schedule) => {
+    schedule.forEach(item => {
+      if (item.Period === 'Peak') item.MAGUDUZA = '3'
+    })
+    return schedule
+  },
+  maguduzaPeakShutDown: (schedule) => {
+    schedule.forEach(item => {
+      if (item.Period === 'Peak') item.MAGUDUZA = '0'
+    })
+    return schedule
+  },
+
+  /*****Maguduza Standard *********/ 
+  maguduzaStandardFullLoad: (schedule) => {
+    schedule.forEach(item => {
+      if (item.Period === 'Standard') item.MAGUDUZA = '5.6'
+    })
+    return schedule
+  },
+  maguduzaStandardHalfLoad: (schedule) => {
+    schedule.forEach(item => {
+      if (item.Period === 'Standard') item.MAGUDUZA = '3'
+    })
+    return schedule
+  },
+  maguduzaStandardShutDown: (schedule) => {
+    schedule.forEach(item => {
+      if (item.Period === 'Standard') item.MAGUDUZA = '0'
+    })
+    return schedule
+  },
+
+   /*****Maguduza off-Peak *********/ 
+   maguduzaOffPeakFullLoad: (schedule) => {
+    schedule.forEach(item => {
+      if (item.Period === 'Off-Peak') item.MAGUDUZA = '5.6'
+    })
+    return schedule
+  },
+  maguduzaOffPeakHalfLoad: (schedule) => {
+    schedule.forEach(item => {
+      if (item.Period === 'Off-Peak') item.MAGUDUZA = '3'
+    })
+    return schedule
+  },
+  maguduzaOffPeakShutDown: (schedule) => {
+    schedule.forEach(item => {
+      if (item.Period === 'Off-Peak') item.MAGUDUZA = '0'
+    })
+    return schedule
+  },
+
+  /*****Maguduza ShutDown *********/ 
+  edwaShutDown: (schedule) => {
+    schedule.forEach(item => {
+      item.MAGUDUZA = '0'
+    })
+    return schedule
+  },
+
+}
 
 export default {
   methods

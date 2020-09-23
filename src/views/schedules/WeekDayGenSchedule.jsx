@@ -1,3 +1,4 @@
+import MaterialTable from 'material-table';
 import React, { Component } from 'react'
 import { InflowsContext } from "../../components/Context/context"
 import {
@@ -5,38 +6,80 @@ import {
   CardBody,
   CardHeader,
   CardTitle,
-  Col,
-  Table
+  Col
 } from "reactstrap";
 
 export default class WeekDayGenSchedule extends Component {
   static contextType = InflowsContext
+  constructor(props) {
+    super()
+    this.state = {
+      columns: [
+        { title: 'Time', field: 'Time' },
+        { title: 'Period', field: 'Period' },
+        { title: 'Ezulwini', field: 'EZULWINI' },
+        { title: 'Edwaleni', field: 'EDWALENI' },
+        { title: 'Maguduza', field: 'MAGUDUZA' }
+      ],
+      data: [],
+      edit: [],
+      date: '',
+      modal: false
+    }
+  }
+  componentDidUpdate(prevProps) {
+    if (this.props.date !== prevProps.date) {
+      let date = this.props.date
+      date = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} `
+      this.setState({date})
+    }
+  }
   hadleRowClick = (item) => {
     console.log(item)
+  }
+  componentDidMount = () => {
+    let date = new Date()
+    date = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} `
+      this.setState({date})
   }
 
   render() {
     const {currentSchedule} = this.context
-
-    let tableData = currentSchedule.map((item, index) => {
-      return <tr key={index} onClick={() => this.hadleRowClick(item)}>
-      <td>{item.Time}</td>
-      <td>{item.Period}</td>
-      <td>{item.EZULWINI}</td>
-      <td>{item.EDWALENI}</td>
-      <td>{item.MAGUDUZA}</td>
-    </tr>
-      
-    })
+    const {columns, date} = this.state
     return (
       <>
-        <Col md="7">
+        <Col md="6">
               <Card className="card-user">
               <CardHeader>
                   <CardTitle tag="h4">Daily Generation Schedule</CardTitle>
+                  <CardTitle tag="h5">For Period: {date}</CardTitle> 
                 </CardHeader>
                 <CardBody>
-                <Table className="tablesorter" responsive bordered>
+                <MaterialTable
+                      title="Editable Example"
+                      columns={columns}
+                      data={currentSchedule}
+                      options={{
+                        paging: false
+                      }}
+                      editable={{
+                        onRowUpdate: (newData, oldData) =>
+                          new Promise((resolve) => {
+                            setTimeout(() => {
+                              resolve();
+                              if (oldData) {
+                                this.setState((prevState) => {
+                                  const data = [...prevState.data];
+                                  data[data.indexOf(oldData)] = newData;
+                                  return { ...prevState, data };
+                                });
+                                this.handleSaveModel()
+                              }
+                            }, 600);
+                          })
+                      }}
+                    />
+                {/* <Table className="tablesorter" responsive bordered>
                     <thead className="text-primary">
                       <tr>
                         <th>Time</th>
@@ -49,7 +92,7 @@ export default class WeekDayGenSchedule extends Component {
                     <tbody>
                       {tableData}
                     </tbody>
-                  </Table>
+                  </Table> */}
                 </CardBody>
               </Card>
             </Col>

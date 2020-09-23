@@ -5,6 +5,7 @@ import weekDayGenSchedule from '../../data/weekDayGenSchedule.json'
 import weekEndGenSchedule from '../../data/weekEndGenSchedule.json'
 import weekSunGenSchedule from '../../data/weekSunGenSchedule.json'
 import functions from '../../utils/functions'
+import swal from 'sweetalert'
 
 const InflowsContext = React.createContext();
 
@@ -23,15 +24,54 @@ class InflowsProvider extends Component {
             currentModel: [],
             gs15ReviewYears: [`${new Date().getFullYear()}`],
             years: [],
+            ezulwini: [],
             config : {
                 headers: { Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZjMwMjkyZjZjZjFiOTAwMTcyODZhMmYiLCJpYXQiOjE1OTY5OTE3OTF9.n0rOE78rbqRVWzWS3t9qn9KVDQQGAG4RIDEITlh07sk' }
             },
+            // config : {
+            //     headers: { Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZjIzY2E3ODY4ZDU3YjViZWM1NjU0ZTYiLCJpYXQiOjE1OTYxODE4NDJ9.KpDl4sTqkVG5zOvXHyACNbIB8VWVjZAk16nJok0tuHw' }
+            // },
             date: `${new Date().toDateString()} ${new Date().toTimeString()}`,
             months : ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
             weekDayGenSchedule: weekDayGenSchedule,
             weekEndGenSchedule: weekEndGenSchedule,
             weekSunGenSchedule: weekSunGenSchedule,
-            currentSchedule: []
+            currentSchedule: [],
+            summary: [
+                {
+                    text: 'Current Model',
+                    value: ''
+                },
+                {
+                    text: 'Current Month',
+                    value: ''
+                },
+                {
+                    text: 'Monthly Limit (m.a.s.l)',
+                    value: ''
+                },
+                {
+                    text: 'Monthly Limit (%)',
+                    value: ''
+                },
+                {
+                    text: 'Available Water (mil. m³/s)',
+                    value: ''
+                },
+                {
+                    text: 'Water Consumend ',
+                    value: ''
+                },
+                {
+                    text: 'Final Dam Level(m.a.s.l)',
+                    value: ''
+                },
+                {
+                    text: 'Final Dam Level(%)',
+                    value: ''
+                }
+                
+            ]
         }
     }
     componentDidMount() {
@@ -281,7 +321,6 @@ class InflowsProvider extends Component {
     }
     handleForecastDateChange = (date) => {
         let day = date.getDay()
-        console.log(day)
         if(day === 6 ) {
             this.setState({currentSchedule: this.state.weekEndGenSchedule})
         } else if(day === 0) {
@@ -289,17 +328,154 @@ class InflowsProvider extends Component {
         } else {
             this.setState({currentSchedule: this.state.weekDayGenSchedule})
         }
+        
     }
-    generateSchedule = () => {
-        let currentSchedule = this.state.currentSchedule
-        currentSchedule.forEach(item => {
-            item.EZULWINI = 10
-        })
-        this.setState({currentSchedule})
+    generateSchedule = async (state) => {
+        const {
+            startDate, 
+            Mkinkomo_Reservoir_Daily_Level, 
+            Luphohlo_Daily_Level,
+            Ferreira,
+            GS_15,
+            GS_2,
+            model
+        } = state
+        let selectedModel = this.state.models.filter(models => models.Model_Name === model)
+        await this.setState({currentModel: selectedModel})
+        const inflow = {
+            "Day_of_Input": startDate,
+            "GS_2": GS_2,
+            "GS_15": GS_15,
+            "Ferreira": Ferreira,
+            "Luphohlo_Daily_Level": Luphohlo_Daily_Level,
+            "Mkinkomo_Reservoir_Daily_Level": Mkinkomo_Reservoir_Daily_Level,
+        }
+        await this.postInflow(inflow)
+        this.updateSummary('Current Model', model)
+        this.updateSummary('Current Month', this.state.months[startDate.getMonth()] )
+        const limit = this.state.currentModel[0].Opt[startDate.getMonth()].y
+        this.updateSummary('Monthly Limit (m.a.s.l)', limit)
+        const volume = this.state.utils.methods.levelToVol(parseInt(limit))
+        const percent = ((volume / 23600000) * 100).toFixed(2)
+        this.updateSummary('Monthly Limit (%)', percent)
+        const dayVolume = this.state.utils.methods.levelToVol(parseInt(Luphohlo_Daily_Level))
+        
+        await this.calculateDailyReq(parseInt(GS_15), parseInt(volume), parseInt(dayVolume))
+        this.populateSchedule(startDate)
+
+    }
+    populateSchedule = (startDate) => {
+        const month = startDate.getMonth()
+        const day = startDate.getDay()
+        
+        if (day === 1 || day === 7) {
+            // weekends
+        } else {
+            if (month === 5 || month === 6 || month === 7) {
+                // weekday and peak season
+            } else {
+                // weekday and off-peak season
+                this.populateScheduleWeekDayOffPeak()
+            }
+        }
+       
+    }
+    populateScheduleWeekDayOffPeak = async () => {
+        const {
+            PEAK,
+            STANDARD,
+            STANDARDHALFLOAD,
+            OFFPEAKHALFLOAD,
+            OFFPEAKFULLLOAD 
+        } = this.state.ezulwini
+        let generatedSchedule = this.state.utils.methods.ezulwiniShutDown(this.state.currentSchedule)
+
+        if (PEAK === 0 || PEAK > 0) {
+            this.state.utils.methods.ezulwiniPeakFullLoad(generatedSchedule)
+        }
+        if (PEAK > 0 && STANDARDHALFLOAD > 0 && STANDARD < 0) {
+            this.state.utils.methods.ezulwiniStandardHalfLoad(generatedSchedule)
+        }
+        if (PEAK > 0 && STANDARD > 0) {
+            this.state.utils.methods.ezulwiniStandardFullLoad(generatedSchedule)
+        }
+        if (OFFPEAKHALFLOAD > 0 && PEAK > 0 && OFFPEAKFULLLOAD < 0) {
+            this.state.utils.methods.ezulwiniOffPeakHalfLoad(generatedSchedule)
+        }
+        if (OFFPEAKFULLLOAD > 0 && PEAK > 0 ) {
+            this.state.utils.methods.ezulwiniOffPeakFullLoad(generatedSchedule)
+        }
+        await this.setState({currentSchedule: generatedSchedule})
+    }
+    calculateDailyReq = async (GS_15, MONTHLY_LIMIT, INITIAL_LUPHOHLO_DAM_VOLUME) => {
+        const DAILY_LUPHOHLO_INFLOW = GS_15 * 24 * 60 * 60
+        const TOTAL_DAILY_AVAILABLE_WATER = (DAILY_LUPHOHLO_INFLOW + INITIAL_LUPHOHLO_DAM_VOLUME) - MONTHLY_LIMIT
+        this.updateSummary('Available Water (mil. m³/s)', (TOTAL_DAILY_AVAILABLE_WATER / 1000000).toFixed(2))
+
+        /* weekdays */
+        const TOTAL_WATER_NEEDED_FOR_PEAK_FULL_LOAD = this.calcEzWater(20,7)
+        const TOTAL_WATER_NEEDED_FOR_PEAK_HALF_LOAD = this.calcEzWater(10,7)
+        const TOTAL_WATER_NEEDED_FOR_STND_FULL_LOAD = this.calcEzWater(20,9) // C28
+        const TOTAL_WATER_NEEDED_FOR_STND_HALF_LOAD = this.calcEzWater(10,9) // E28
+        const TOTAL_WATER_NEEDED_FOR_OFF_PEAK_FULL_LOAD = this.calcEzWater(20,8) // E33
+        const TOTAL_WATER_NEEDED_FOR_OFF_PEAK_HALF_LOAD = this.calcEzWater(10,8) // E31
+
+        const PEAK = TOTAL_DAILY_AVAILABLE_WATER - TOTAL_WATER_NEEDED_FOR_PEAK_FULL_LOAD // C27
+        const PEAKHALFLOAD = TOTAL_DAILY_AVAILABLE_WATER - TOTAL_WATER_NEEDED_FOR_PEAK_HALF_LOAD 
+        const STANDARD = PEAK - TOTAL_WATER_NEEDED_FOR_STND_FULL_LOAD // C29 = C27 - C28
+        const STANDARDHALFLOAD = PEAK - TOTAL_WATER_NEEDED_FOR_STND_HALF_LOAD // E29 = C27 - E28
+        const OFFPEAKHALFLOAD = STANDARD - TOTAL_WATER_NEEDED_FOR_OFF_PEAK_HALF_LOAD // E32 = C29 - E31
+        const OFFPEAKFULLLOAD =  STANDARD - TOTAL_WATER_NEEDED_FOR_OFF_PEAK_FULL_LOAD // E34 = C29 - E33
+
+        const ezulwini = {
+            PEAK,
+            PEAKHALFLOAD,
+            STANDARD,
+            STANDARDHALFLOAD,
+            OFFPEAKHALFLOAD,
+            OFFPEAKFULLLOAD 
+        }
+        await this.setState({ezulwini})
     } 
 
+    calcEzWater = (watts, hours) => watts * hours * 0.5238 * 60 * 60 
 
+    /*update summary */
+    updateSummary = (text, value) => {
+        const elementsIndex = this.state.summary.findIndex(element => element.text === text )
+        let newSummary = [...this.state.summary]
+        newSummary[elementsIndex] = {...newSummary[elementsIndex], value: value}
+        this.setState({
+            summary: newSummary,
+        });
+        
+    }
 
+    /*post new inflows */
+    postInflow = (inflow) => {
+        // axios.post( 
+        //     `${process.env.REACT_APP_API}/inflows`,
+        //     inflow,
+        //     this.state.config
+        //   ).then( res => {
+        //       console.log(res)
+        //       this.alert(res)
+        //     //   this.getAllModels()
+        //   })
+        //   .catch(res => console.log(res));
+
+    }
+
+    alert = (res) => {
+        swal({
+          title: "Inflows Added",
+          text: `Date: ${res.data.Day_of_Input}`,
+          icon: "success",
+          button: "Okay",
+        }).then(() => {
+            this.getAllInflows()
+        });
+      }
     /********Drainage model*****/
     handleDrainageModelChange = (modelName) => {
         this.setState({ reviewModels: [modelName] })

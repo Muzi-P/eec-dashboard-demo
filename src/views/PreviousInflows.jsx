@@ -30,7 +30,7 @@ export default class PreviousInflows extends Component {
     })
     return (
       <>
-        <Col md="5">
+        <Col md="6">
               <Card>
               <CardHeader>
                   <CardTitle tag="h4">Last 5 Inputs</CardTitle>
