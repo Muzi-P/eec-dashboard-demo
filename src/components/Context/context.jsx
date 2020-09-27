@@ -55,11 +55,11 @@ class InflowsProvider extends Component {
                     value: ''
                 },
                 {
-                    text: 'Available Water (mil. m³/s)',
+                    text: 'Available Water (mil. m³)',
                     value: ''
                 },
                 {
-                    text: 'Water Consumend ',
+                    text: 'Water Used (mil. m³)',
                     value: ''
                 },
                 {
@@ -361,23 +361,25 @@ class InflowsProvider extends Component {
         const dayVolume = this.state.utils.methods.levelToVol(parseInt(Luphohlo_Daily_Level))
         
         await this.calculateDailyReq(parseInt(GS_15), parseInt(volume), parseInt(dayVolume))
-        this.populateSchedule(startDate)
+        this.populateSchedule(startDate, Luphohlo_Daily_Level)
 
     }
-    populateSchedule = (startDate) => {
+    populateSchedule = (startDate, Luphohlo_Daily_Level) => {
         const month = startDate.getMonth()
         const day = startDate.getDay()
-        
-        if (day === 1 || day === 7) {
+        console.log(month)
+        if (day === 6 || day === 0) {
             // weekends
         } else {
             if (month === 5 || month === 6 || month === 7) {
                 // weekday and peak season
+                this.populateScheduleWeekDayPeakSeason(Luphohlo_Daily_Level)
             } else {
                 // weekday and off-peak season
                 this.populateScheduleWeekDayOffPeak()
             }
         }
+        this.calcSum ()
        
     }
     populateScheduleWeekDayOffPeak = async () => {
@@ -389,28 +391,52 @@ class InflowsProvider extends Component {
             OFFPEAKFULLLOAD 
         } = this.state.ezulwini
         let generatedSchedule = this.state.utils.methods.ezulwiniShutDown(this.state.currentSchedule)
+        let waterConsumed = 0
 
         if (PEAK === 0 || PEAK > 0) {
-            this.state.utils.methods.ezulwiniPeakFullLoad(generatedSchedule)
+            generatedSchedule = this.state.utils.methods.ezulwiniPeakFullLoad(generatedSchedule)
+            waterConsumed = waterConsumed + PEAK
         }
         if (PEAK > 0 && STANDARDHALFLOAD > 0 && STANDARD < 0) {
-            this.state.utils.methods.ezulwiniStandardHalfLoad(generatedSchedule)
+            generatedSchedule = this.state.utils.methods.ezulwiniStandardHalfLoad(generatedSchedule)
+            waterConsumed = waterConsumed + STANDARDHALFLOAD
         }
         if (PEAK > 0 && STANDARD > 0) {
-            this.state.utils.methods.ezulwiniStandardFullLoad(generatedSchedule)
+            generatedSchedule = this.state.utils.methods.ezulwiniStandardFullLoad(generatedSchedule)
+            waterConsumed = (waterConsumed - STANDARDHALFLOAD) + STANDARD
         }
         if (OFFPEAKHALFLOAD > 0 && PEAK > 0 && OFFPEAKFULLLOAD < 0) {
-            this.state.utils.methods.ezulwiniOffPeakHalfLoad(generatedSchedule)
+            generatedSchedule = this.state.utils.methods.ezulwiniOffPeakHalfLoad(generatedSchedule)
+            waterConsumed = waterConsumed + OFFPEAKHALFLOAD
         }
         if (OFFPEAKFULLLOAD > 0 && PEAK > 0 ) {
-            this.state.utils.methods.ezulwiniOffPeakFullLoad(generatedSchedule)
+            generatedSchedule = this.state.utils.methods.ezulwiniOffPeakFullLoad(generatedSchedule)
+            waterConsumed = (waterConsumed - OFFPEAKHALFLOAD) + OFFPEAKFULLLOAD
+        }
+        waterConsumed = (waterConsumed / 1000000).toFixed(2)
+        this.updateSummary('Water Used (mil. m³)', waterConsumed)
+        await this.setState({currentSchedule: generatedSchedule})
+    }
+    populateScheduleWeekDayPeakSeason = async (Luphohlo_Daily_Level) => {
+        let generatedSchedule = this.state.utils.methods.ezulwiniShutDown(this.state.currentSchedule)
+        if (parseInt(Luphohlo_Daily_Level) > 1002) {
+            generatedSchedule = this.state.utils.methods.ezulwiniPeakFullLoad(generatedSchedule)
+            let waterConsumed = (this.state.ezulwini.PEAK / 1000000).toFixed(2)
+            this.updateSummary('Water Used (mil. m³)', waterConsumed)
         }
         await this.setState({currentSchedule: generatedSchedule})
+
+    }
+    calcSum = async () => {
+        let generatedSchedule = this.state.currentSchedule
+        generatedSchedule = this.state.utils.methods.calcSum(generatedSchedule)
+        await this.setState({currentSchedule: generatedSchedule})
+
     }
     calculateDailyReq = async (GS_15, MONTHLY_LIMIT, INITIAL_LUPHOHLO_DAM_VOLUME) => {
         const DAILY_LUPHOHLO_INFLOW = GS_15 * 24 * 60 * 60
         const TOTAL_DAILY_AVAILABLE_WATER = (DAILY_LUPHOHLO_INFLOW + INITIAL_LUPHOHLO_DAM_VOLUME) - MONTHLY_LIMIT
-        this.updateSummary('Available Water (mil. m³/s)', (TOTAL_DAILY_AVAILABLE_WATER / 1000000).toFixed(2))
+        this.updateSummary('Available Water (mil. m³)', (TOTAL_DAILY_AVAILABLE_WATER / 1000000).toFixed(2))
 
         /* weekdays */
         const TOTAL_WATER_NEEDED_FOR_PEAK_FULL_LOAD = this.calcEzWater(20,7)

@@ -412,6 +412,45 @@ const methods = {
     })
     return schedule
   },
+  /*****Calculate Sum *********/ 
+  calcSum: (schedule) => {
+    let ezulwiniSum = 0 
+    let ezulwiniSumPeak = 0 
+    let ezulwiniSumStnd = 0 
+    let ezulwiniSumOffPeak = 0
+    schedule.forEach(item => {
+      /* sum */
+      ezulwiniSum = ezulwiniSum + parseInt(item.EZULWINI)
+      if (item.Period === 'SUM') {
+        item.EZULWINI = ezulwiniSum
+      }
+
+      /* Peak sum */
+      if (item.Period === 'Peak') {
+        ezulwiniSumPeak = ezulwiniSumPeak + parseInt(item.EZULWINI)
+      }
+      if (item.Period === 'PEAK') {
+        item.EZULWINI = ezulwiniSumPeak
+      }
+
+       /* Standard sum */
+       if (item.Period === 'Standard') {
+        ezulwiniSumStnd = ezulwiniSumStnd + parseInt(item.EZULWINI)
+      }
+      if (item.Period === 'STANDARD') {
+        item.EZULWINI = ezulwiniSumStnd
+      }
+
+      /* Off-Peak sum */
+      if (item.Period === 'Off-Peak') {
+        ezulwiniSumOffPeak = ezulwiniSumOffPeak + parseInt(item.EZULWINI)
+      }
+      if (item.Period === 'OFF-PEAK') {
+        item.EZULWINI = ezulwiniSumOffPeak
+      }
+    })
+    return schedule
+  },
 
 }
 
