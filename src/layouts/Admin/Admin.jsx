@@ -9,7 +9,7 @@ import AdminNavbar from "../../components/Navbars/AdminNavbar";
 // import Footer from "components/Footer/Footer.jsx";
 import Footer from "../../components/Footer/Footer";
 import Sidebar from "../../components/Sidebar/Sidebar.jsx";
-import FixedPlugin from "../../components/FixedPlugin/FixedPlugin.jsx";
+// import FixedPlugin from "../../components/FixedPlugin/FixedPlugin.jsx";
 
 // import routes from "routes.js";
 import routes from "../../routes";
@@ -128,10 +128,10 @@ class Admin extends React.Component {
           </div>
         </div>
         <div className="fixed-plugin mystyle">
-        <FixedPlugin
+        {/* <FixedPlugin
           bgColor={this.state.backgroundColor}
           handleBgClick={this.handleBgClick}
-        />
+        /> */}
         </div>
       </>
     );
