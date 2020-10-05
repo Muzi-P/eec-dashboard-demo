@@ -13,17 +13,23 @@ import "../src/assets/demo/demo.css";
 // import ".assets/css/nucleo-icons.css";
 import "../src/assets/css/nucleo-icons.css";
 
+// Date Picker
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
+
 const hist = createBrowserHistory();
 
 ReactDOM.render(
   <InflowsProvider>
-  <Router history={hist}>
-    <Switch>
-      <Route path="/admin" render={props => <AdminLayout {...props} />} />
-      <Route path="/rtl" render={props => <RTLLayout {...props} />} />
-      <Redirect from="/" to="/admin/dashboard" />
-    </Switch>
-  </Router>
+    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+      <Router history={hist}>
+        <Switch>
+          <Route path="/admin" render={props => <AdminLayout {...props} />} />
+          <Route path="/rtl" render={props => <RTLLayout {...props} />} />
+          <Redirect from="/" to="/admin/dashboard" />
+        </Switch>
+     </Router>
+    </MuiPickersUtilsProvider>
   </InflowsProvider>,
 document.getElementById("root")
 );

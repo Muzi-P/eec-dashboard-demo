@@ -1,7 +1,10 @@
 
 import React, { Component } from 'react'
 import { InflowsContext } from "../components/Context/context"
-import DatePicker from "react-datepicker";
+// import DatePicker from "react-datepicker";
+import {
+  KeyboardDatePicker
+} from '@material-ui/pickers';
  
 import "react-datepicker/dist/react-datepicker.css";
 import PreviousInflows from './PreviousInflows';
@@ -34,7 +37,8 @@ class GenerateSchedule extends Component {
       GS_15: '',
       GS_2: '',
       valid: true,
-      model: ''
+      model: '',
+      selectedDate: new Date()
     }
   }
   
@@ -80,14 +84,19 @@ class GenerateSchedule extends Component {
                 <CardBody>
                   <Form>
                     <Row>
-                      <Col className="pr-md-1" md="3">
+                      <Col className="pr-md-1" md="4">
                         <FormGroup>
                           <label htmlFor="exampleInputEmail1">
                             Select Date:
                           </label>
-                          <DatePicker
-                            selected={this.state.startDate}
-                            onChange={this.handleChange}
+                          <KeyboardDatePicker
+                            autoOk
+                            variant="inline"
+                            inputVariant="outlined"
+                            format="MM/dd/yyyy"
+                            value={this.state.startDate}
+                            InputAdornmentProps={{ position: "start" }}
+                            onChange={date => this.handleChange(date)}
                           />
                         </FormGroup>
                       </Col>
@@ -173,20 +182,6 @@ class GenerateSchedule extends Component {
                         </FormGroup>
                       </Col>
                     </Row>
-                    {/* <Row>
-                      <Col md="8">
-                        <FormGroup>
-                          <label>Notes</label>
-                          <Input
-                            cols="80"
-                            defaultValue="Could not get Luphohlo dam level"
-                            placeholder="Here can be your description"
-                            rows="4"
-                            type="textarea"
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row> */}
                   </Form>
                 </CardBody>
                 <CardFooter>
