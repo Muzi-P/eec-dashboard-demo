@@ -37,7 +37,7 @@ export default class MuLtiSeriesAreaChartGS15Wrapper extends Component {
 
         let yearInfocus = this.context.years.map((year, key) => {
             return <InputGroupText className="reveiwYear" key={year}>
-                <Input addon type="checkbox" aria-label="Checkbox for following text input" onChange={e => this.handleChange(e)} value={year} key={year} />
+                <Input addon type="checkbox" aria-label="Checkbox for following text input" onChange={e => this.handleChange(e)} value={year} key={year} checked={gs15ReviewYears.includes(year)} />
                 {year}
             </InputGroupText>
         })

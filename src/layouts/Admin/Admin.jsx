@@ -4,18 +4,15 @@ import { Route, Switch } from "react-router-dom";
 import PerfectScrollbar from "perfect-scrollbar";
 
 // core components
-// import AdminNavbar from "components/Navbars/AdminNavbar.jsx";
 import AdminNavbar from "../../components/Navbars/AdminNavbar";
 // import Footer from "components/Footer/Footer.jsx";
 import Footer from "../../components/Footer/Footer";
 import Sidebar from "../../components/Sidebar/Sidebar.jsx";
 // import FixedPlugin from "../../components/FixedPlugin/FixedPlugin.jsx";
 
-// import routes from "routes.js";
 import routes from "../../routes";
 
 import logo from "../../assets/img/sec.jpeg";
-// import logo from "../../assets/img/";
 
 var ps;
 

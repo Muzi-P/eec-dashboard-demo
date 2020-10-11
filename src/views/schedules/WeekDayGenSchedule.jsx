@@ -60,7 +60,8 @@ export default class WeekDayGenSchedule extends Component {
                       columns={columns}
                       data={currentSchedule}
                       options={{
-                        paging: false
+                        paging: false,
+                        search: false
                       }}
                       editable={{
                         onRowUpdate: (newData, oldData) =>

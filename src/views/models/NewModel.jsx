@@ -85,7 +85,8 @@ export default class NewModel extends Component {
                     columns={columns}
                     data={data}
                     options={{
-                      paging: false
+                      paging: false,
+                      search: false
                     }}
                     editable={{
                       onRowUpdate: (newData, oldData) =>

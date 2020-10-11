@@ -99,6 +99,7 @@ class InflowsProvider extends Component {
             if (!years.includes(year.toString())) years.push(year.toString())
         })
         this.setState({years})
+        this.setState({gs15ReviewYears: years})
 
         // this.postToNode(inflows)
     }
