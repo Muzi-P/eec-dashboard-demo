@@ -18,6 +18,7 @@
 import React from "react";
 // nodejs library that concatenates classes
 import classNames from "classnames";
+import { InflowsContext } from "../Context/context"
 
 // reactstrap components
 import {
@@ -38,6 +39,7 @@ import {
 } from "reactstrap";
 
 class AdminNavbar extends React.Component {
+  static contextType = InflowsContext
   constructor(props) {
     super(props);
     this.state = {
@@ -85,6 +87,10 @@ class AdminNavbar extends React.Component {
       modalSearch: !this.state.modalSearch
     });
   };
+  // this function handles logout
+  logOut = () => {
+    this.context.logOut()
+  }
   render() {
     return (
       <>
@@ -206,7 +212,7 @@ class AdminNavbar extends React.Component {
                     </NavLink>
                     <DropdownItem divider tag="li" />
                     <NavLink tag="li">
-                      <DropdownItem className="nav-item">Log out</DropdownItem>
+                      <DropdownItem onClick={this.logOut} className="nav-item">Log out</DropdownItem>
                     </NavLink>
                   </DropdownMenu>
                 </UncontrolledDropdown>

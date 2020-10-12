@@ -6,6 +6,8 @@ import weekEndGenSchedule from '../../data/weekEndGenSchedule.json'
 import weekSunGenSchedule from '../../data/weekSunGenSchedule.json'
 import functions from '../../utils/functions'
 import swal from 'sweetalert'
+import Cookies from 'js-cookie'
+
 
 const InflowsContext = React.createContext();
 
@@ -25,12 +27,9 @@ class InflowsProvider extends Component {
             gs15ReviewYears: [`${new Date().getFullYear()}`],
             years: [],
             ezulwini: [],
-            config : {
-                headers: { Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZjMwMjkyZjZjZjFiOTAwMTcyODZhMmYiLCJpYXQiOjE1OTY5OTE3OTF9.n0rOE78rbqRVWzWS3t9qn9KVDQQGAG4RIDEITlh07sk' }
-            },
-            // config : {
-            //     headers: { Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZjIzY2E3ODY4ZDU3YjViZWM1NjU0ZTYiLCJpYXQiOjE1OTYxODE4NDJ9.KpDl4sTqkVG5zOvXHyACNbIB8VWVjZAk16nJok0tuHw' }
-            // },
+            isAuthenticated: false,
+            user: {},
+            config : {},
             date: `${new Date().toDateString()} ${new Date().toTimeString()}`,
             months : ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
             weekDayGenSchedule: weekDayGenSchedule,
@@ -74,15 +73,29 @@ class InflowsProvider extends Component {
             ]
         }
     }
-    componentDidMount() {
+    componentDidMount = () => {
+        this.init()
+    }
+    init = async () => {
+        const token = Cookies.get('token')
+        if (token) {
+            await this.setState({isAuthenticated: true})
+        }
+        const config = {
+            headers: { Authorization: `Bearer ${token}` }
+        }
+        await this.setState({ config })
         this.getAllInflows()
         this.getAllModels()
+        this.getCurrentUser()
     }
     getAllInflows = () => {
         axios.get(`${process.env.REACT_APP_API}/inflows`, this.state.config)
         .then(res => {
             this.setState({ inflows: res.data })
             this.getAllYears(res.data)
+        }).catch(() => {
+            this.setState({isAuthenticated: false})
         })
     }
     getAllModels = () => {
@@ -90,6 +103,12 @@ class InflowsProvider extends Component {
         .then(res => {
             this.setState({ models: res.data })
             this.getAllModelNames(res.data)
+        })
+    }
+    getCurrentUser = () => {
+        axios.get(`${process.env.REACT_APP_API}/users/me`, this.state.config)
+        .then(res => {
+            this.setState({user: res.data})
         })
     }
     getAllYears = (inflows) => {
@@ -569,7 +588,35 @@ class InflowsProvider extends Component {
           ).then(this.getAllModels())
           .catch(res => console.log(res));
     }
+    signIn = (loginInfo) => {
+        axios.post( 
+            `${process.env.REACT_APP_API}/users/login`,
+            loginInfo,
+            ).then((res) => {
+                Cookies.set('token', res.data.token)
+                Cookies.set('loggedIn', true)
+                this.setState({user: res.data.user})
+            }).then(() => {
+                this.init()
+            })
+            .catch(res => console.log(res));
 
+    }
+    signUp = (loginInfo) => {
+        axios.post( 
+            `${process.env.REACT_APP_API}/users`,
+            loginInfo,
+            ).then((res) => {
+                Cookies.set('token', res.data.token)
+                Cookies.set('loggedIn', true)
+                this.setState({user: res.data.user})
+            }).then(() => {
+                this.init()
+            })
+            .catch(res => console.log(res));
+
+    }
+    
     /*delete a model */
     deleteModel = (modelName) => {
         axios.delete( 
@@ -578,9 +625,31 @@ class InflowsProvider extends Component {
           ).then(this.handleDrainageModelChange(this.state.modelNames[0]))
           .catch(res => console.log(res));
     }
+    keepLoggedIn = () => {
+        this.setState({isAuthenticated: true})
+    }
+    logOut = async () => {
+        const token = Cookies.get('token')
+        if (!token) {
+            await this.setState({isAuthenticated: false})
+        }
+        const config = {
+            headers: { Authorization: `Bearer ${token}` }
+        }
+        axios.post( 
+            `${process.env.REACT_APP_API}/users/logout`,
+            {},
+            config,
+            ).then((res) => {
+                console.log(res)
+                Cookies.remove('token')
+                Cookies.set('loggedIn', false)
+                this.setState({isAuthenticated: false})
+            }).catch(res => console.log(res));
+    }
     render() {
         return (
-            <InflowsContext.Provider value={{ ...this.state, getData: this.populateModel, getDefaultModel: this.getDefaultModel, changeForecastYear: this.changeForecastYear, handleReviewYear: this.handleReviewYear, populateDataPoints: this.populateDataPoints, handleGS15ReviewYear: this.handleGS15ReviewYear, changeGS15ForecastYear: this.changeGS15ForecastYear, populateGS15DataPoints: this.populateGS15DataPoints, handleForecastDateChange: this.handleForecastDateChange, generateSchedule: this.generateSchedule, handleReviewModel: this.handleReviewModel, handleDrainageModelChange: this.handleDrainageModelChange, updateModel: this.updateModel, newModel: this.newModel, deleteModel: this.deleteModel, getAllModels: this.getAllModels }}>
+            <InflowsContext.Provider value={{ ...this.state, getData: this.populateModel, getDefaultModel: this.getDefaultModel, changeForecastYear: this.changeForecastYear, handleReviewYear: this.handleReviewYear, populateDataPoints: this.populateDataPoints, handleGS15ReviewYear: this.handleGS15ReviewYear, changeGS15ForecastYear: this.changeGS15ForecastYear, populateGS15DataPoints: this.populateGS15DataPoints, handleForecastDateChange: this.handleForecastDateChange, generateSchedule: this.generateSchedule, handleReviewModel: this.handleReviewModel, handleDrainageModelChange: this.handleDrainageModelChange, updateModel: this.updateModel, signIn: this.signIn, newModel: this.newModel, deleteModel: this.deleteModel, getAllModels: this.getAllModels, keepLoggedIn: this.keepLoggedIn, logOut: this.logOut, signUp: this.signUp }}>
                 {this.props.children}
             </InflowsContext.Provider>
         )

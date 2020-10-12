@@ -1,20 +1,3 @@
-/*!
-
-=========================================================
-* Black Dashboard React v1.0.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/black-dashboard-react
-* Copyright 2019 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/black-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import React from "react";
 
 // reactstrap components
@@ -31,9 +14,14 @@ import {
   Row,
   Col
 } from "reactstrap";
+import { InflowsContext } from "../components/Context/context"
+
 
 class UserProfile extends React.Component {
+  static contextType = InflowsContext
+
   render() {
+    const user = this.context
     return (
       <>
         <div className="content">
@@ -50,8 +38,7 @@ class UserProfile extends React.Component {
                         <FormGroup>
                           <label>Company (disabled)</label>
                           <Input
-                            defaultValue="Creative Code Inc."
-                            disabled
+                            defaultValue="Eswatini Electricity Company"
                             placeholder="Company"
                             type="text"
                           />
@@ -64,6 +51,7 @@ class UserProfile extends React.Component {
                             defaultValue="michael23"
                             placeholder="Username"
                             type="text"
+                            value={user.name}
                           />
                         </FormGroup>
                       </Col>

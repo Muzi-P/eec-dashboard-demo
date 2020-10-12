@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-
+import Cookies from 'js-cookie'
 import MultiSeriesAreaChart from "../components/Graphs/MuLtiSeriesAreaChart"
 import MuLtiSeriesAreaChartGS15Wrapper from "../components/Graphs/MuLtiSeriesAreaChartGS_15Wrapper"
 import { InflowsContext } from "../components/Context/context"
@@ -28,7 +28,10 @@ class Dashboard extends Component {
     };
   }
 
-
+  componentDidMount = () => {
+    const loggedIn = Cookies.get('loggeIn')
+    if (loggedIn) this.context.keepLoggedIn()
+  }
   handleClick = (e, year) => {
     e.preventDefault();
     this.context.changeForecastYear(year);

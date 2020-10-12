@@ -1,9 +1,58 @@
 import React, { Component } from 'react';
+import { InflowsContext } from "../components/Context/context"
+import { withRouter } from "react-router-dom";
+import Cookies from 'js-cookie'
 
-class App extends Component {
+class LogIn extends Component {
+  static contextType = InflowsContext
+  constructor(props) {
+    super(props)
+    this.state= {
+      email: '',
+      password: '',
+      name: '',
+      greeting: ''
+    }
+  }
+  componentDidMount = () => {
+    const today = new Date()
+    const curHr = today.getHours()
+    let greeting = ''
+    if (curHr < 12) {
+      greeting = 'Good Morning!'
+    } else if (curHr < 18) {
+      greeting = 'Good Afternoon!'
+    } else {
+      greeting = 'Good Evening!'
+    }
+    this.setState({greeting})
+  }
   handleSignUp = (e) => {
     e.preventDefault()
     this.container.classList.add('right-panel-active')
+  }
+  signIn = (e) => {
+    e.preventDefault()
+    this.context.signIn(this.state)
+  }
+  signUp = (e) => {
+    e.preventDefault()
+    this.context.signUp(this.state)
+  }
+  componentDidUpdate() {
+    if (this.context.isAuthenticated) {
+      this.props.history.push("/admin/dashboard")
+    }
+    this.checkStatus()
+  }
+  handleInputChange = (e) => {
+    this.setState({
+      [e.target.id] : e.target.value
+    })
+  }
+  checkStatus = () => {
+    const loggedIn = Cookies.get('loggeIn')
+    if (loggedIn) this.context.keepLoggedIn()
   }
   handleSignIn = (e) => {
     e.preventDefault()
@@ -22,10 +71,10 @@ class App extends Component {
                   <a href="/#" className="social"><i className="fab fa-linkedin-in"></i></a>
                 </div>
                 <span>or use your email for registration</span>
-                <input type="text" placeholder="Name" />
-                <input type="email" placeholder="Email" />
-                <input type="password" placeholder="Password" />
-                <button>Sign Up</button>
+                <input type="text" placeholder="Name" id="name" onChange={this.handleInputChange}/>
+                <input type="email" placeholder="Email" id="email" onChange={this.handleInputChange}/>
+                <input type="password" placeholder="Password" id="password" onChange={this.handleInputChange} autocomplete="off"/>
+                <button onClick={this.signUp}>Sign Up</button>
               </form>
             </div>
             <div className="form-container sign-in-container">
@@ -37,10 +86,10 @@ class App extends Component {
                   <a href="/#" className="social"><i className="fab fa-linkedin-in"></i></a>
                 </div>
                 <span>or use your account</span>
-                <input type="email" placeholder="Email" />
-                <input type="password" placeholder="Password" />
+                <input type="email" placeholder="Email" id="email" onChange={this.handleInputChange}/>
+                <input type="password" placeholder="Password" id="password" onChange={this.handleInputChange} />
                 <a href="/#">Forgot your password?</a>
-                <button >Sign In</button>
+                <button onClick={this.signIn} >Sign In</button>
               </form>
             </div>
             <div className="overlay-container">
@@ -51,8 +100,8 @@ class App extends Component {
                   <button className="ghost" id="signIn" onClick = {this.handleSignIn}>Sign In</button>
                 </div>
                 <div className="overlay-panel overlay-right">
-                  <h1>Hello, Friend!</h1>
-                  <p>Enter your personal details and start journey with us</p>
+                  <h1>{this.state.greeting}</h1>
+                  <p>Enter your personal details and start your journey with us</p>
                   <button className="ghost" id="signUp" onClick = {this.handleSignUp}>Sign Up</button>
                 </div>
               </div>
@@ -64,4 +113,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withRouter(LogIn);
