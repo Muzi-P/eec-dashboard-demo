@@ -1,6 +1,7 @@
 import Dashboard from "./views/Dashboard";
 import Notifications from "./views/Notifications.jsx";
 import UserProfile from "./views/UserProfile.jsx";
+import Settings from "./views/Settings.jsx";
 import GenerateSchedule from "./views/GenarateSchedule";
 import DrainageModels from "./views/DrainageModel";
 
@@ -43,6 +44,14 @@ var routes = [
     rtlName: "ملف تعريفي للمستخدم",
     icon: "tim-icons icon-calendar-60",
     component: DrainageModels,
+    layout: "/admin"
+  },
+  {
+    path: "/settings",
+    name: "Settings",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: "tim-icons icon-settings-gear-63",
+    component: Settings,
     layout: "/admin"
   },
 ];

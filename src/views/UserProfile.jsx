@@ -19,9 +19,10 @@ import { InflowsContext } from "../components/Context/context"
 
 class UserProfile extends React.Component {
   static contextType = InflowsContext
-
+  handleInputChange () {}
   render() {
-    const user = this.context
+    const {user} = this.context
+    console.log(user)
     return (
       <>
         <div className="content">
@@ -36,11 +37,12 @@ class UserProfile extends React.Component {
                     <Row>
                       <Col className="pr-md-1" md="5">
                         <FormGroup>
-                          <label>Company (disabled)</label>
+                          <label>Company</label>
                           <Input
                             defaultValue="Eswatini Electricity Company"
                             placeholder="Company"
                             type="text"
+                            onChange={this.handleInputChange}
                           />
                         </FormGroup>
                       </Col>
@@ -48,9 +50,9 @@ class UserProfile extends React.Component {
                         <FormGroup>
                           <label>Username</label>
                           <Input
-                            defaultValue="michael23"
                             placeholder="Username"
                             type="text"
+                            onChange={this.handleInputChange}
                             value={user.name}
                           />
                         </FormGroup>
@@ -60,7 +62,11 @@ class UserProfile extends React.Component {
                           <label htmlFor="exampleInputEmail1">
                             Email address
                           </label>
-                          <Input placeholder="mike@email.com" type="email" />
+                          <Input 
+                            placeholder="mike@email.com" type="email" 
+                            value={user.email}
+                            onChange={this.handleInputChange}
+                          />
                         </FormGroup>
                       </Col>
                     </Row>
@@ -69,9 +75,10 @@ class UserProfile extends React.Component {
                         <FormGroup>
                           <label>First Name</label>
                           <Input
-                            defaultValue="Mike"
                             placeholder="Company"
                             type="text"
+                            onChange={this.handleInputChange}
+                            value={user.name.split(' ')[0]}
                           />
                         </FormGroup>
                       </Col>
@@ -79,9 +86,10 @@ class UserProfile extends React.Component {
                         <FormGroup>
                           <label>Last Name</label>
                           <Input
-                            defaultValue="Andrew"
                             placeholder="Last Name"
                             type="text"
+                            onChange={this.handleInputChange}
+                            value={user.name.split(' ')[1]}
                           />
                         </FormGroup>
                       </Col>
@@ -91,7 +99,7 @@ class UserProfile extends React.Component {
                         <FormGroup>
                           <label>Address</label>
                           <Input
-                            defaultValue="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09"
+                            defaultValue="Mbabane, Eswatini"
                             placeholder="Home Address"
                             type="text"
                           />
@@ -103,7 +111,7 @@ class UserProfile extends React.Component {
                         <FormGroup>
                           <label>City</label>
                           <Input
-                            defaultValue="Mike"
+                            defaultValue="Mbabane"
                             placeholder="City"
                             type="text"
                           />
@@ -113,7 +121,7 @@ class UserProfile extends React.Component {
                         <FormGroup>
                           <label>Country</label>
                           <Input
-                            defaultValue="Andrew"
+                            defaultValue="Eswatini"
                             placeholder="Country"
                             type="text"
                           />
@@ -123,21 +131,6 @@ class UserProfile extends React.Component {
                         <FormGroup>
                           <label>Postal Code</label>
                           <Input placeholder="ZIP Code" type="number" />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col md="8">
-                        <FormGroup>
-                          <label>About Me</label>
-                          <Input
-                            cols="80"
-                            defaultValue="Lamborghini Mercy, Your chick she so thirsty, I'm in
-                            that two seat Lambo."
-                            placeholder="Here can be your description"
-                            rows="4"
-                            type="textarea"
-                          />
                         </FormGroup>
                       </Col>
                     </Row>
@@ -165,9 +158,9 @@ class UserProfile extends React.Component {
                         className="avatar"
                         // src={require("assets/img/emilyz.jpg")}
                       />
-                      <h5 className="title">Mike Andrew</h5>
+                      <h5 className="title">{user.name}</h5>
                     </a>
-                    <p className="description">Ceo/Co-Founder</p>
+                    <p className="description">Electrical Engineer</p>
                   </div>
                   <div className="card-description">
                     Do not be scared of the truth because we need to restart the

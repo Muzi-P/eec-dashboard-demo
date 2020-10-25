@@ -20,6 +20,7 @@ class InflowsProvider extends Component {
             modelNames: [],
             currentYear: new Date().getFullYear(),
             reviewYears: [],
+            powerStations: [],
             reviewModels: [],
             utils: functions,
             selectedModel: [],
@@ -29,6 +30,9 @@ class InflowsProvider extends Component {
             ezulwini: [],
             isAuthenticated: false,
             user: {},
+            ezulwiniPS: {},
+            edwaleniPS: {},
+            maguduzaPS: {},
             config : {},
             date: `${new Date().toDateString()} ${new Date().toTimeString()}`,
             months : ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
@@ -88,6 +92,7 @@ class InflowsProvider extends Component {
         this.getAllInflows()
         this.getAllModels()
         this.getCurrentUser()
+        this.getAllPowerStations()
     }
     getAllInflows = () => {
         axios.get(`${process.env.REACT_APP_API}/inflows`, this.state.config)
@@ -96,6 +101,31 @@ class InflowsProvider extends Component {
             this.getAllYears(res.data)
         }).catch(() => {
             this.setState({isAuthenticated: false})
+        })
+    }
+    getAllPowerStations = () => {
+        axios.get(`${process.env.REACT_APP_API}/power-stations`, this.state.config)
+        .then(res => {
+            this.formatStations(res.data)
+        }).catch(() => {
+            this.setState({isAuthenticated: false})
+        })
+    }
+    formatStations = (stations) => {
+        stations.forEach(item => {
+            switch (item.Name) {
+                case "Edwaleni Power Station":
+                    this.setState({edwaleniPS: item})
+                    break;
+                case "Maguduza Power Station":
+                    this.setState({maguduzaPS: item})
+                    break;
+                case "Ezulwini Power Station":
+                    this.setState({ezulwiniPS: item})
+                    break;
+                default:
+                    break;
+            }
         })
     }
     getAllModels = () => {
@@ -505,21 +535,34 @@ class InflowsProvider extends Component {
         //     this.state.config
         //   ).then( res => {
         //       console.log(res)
-        //       this.alert(res)
+        //       this.alert("Inflows Added", `Date: ${res.data.Day_of_Input}`)
         //     //   this.getAllModels()
         //   })
         //   .catch(res => console.log(res));
 
     }
+    /*edit rate flow */
+    editRatedFlow = (powerStation) => {
+        axios.patch( 
+            `${process.env.REACT_APP_API}/power-stations/${powerStation.Name}`,
+            powerStation,
+            this.state.config
+          ).then( res => {
+              this.alert('Rated Flow Updated', res.data.Name)
+          })
+          .catch(res => console.log(res));
 
-    alert = (res) => {
+    }
+
+    alert = (title, text) => {
         swal({
-          title: "Inflows Added",
-          text: `Date: ${res.data.Day_of_Input}`,
+          title,
+          text,
           icon: "success",
           button: "Okay",
         }).then(() => {
             this.getAllInflows()
+            this.getAllPowerStations()
         });
       }
     /********Drainage model*****/
@@ -649,7 +692,7 @@ class InflowsProvider extends Component {
     }
     render() {
         return (
-            <InflowsContext.Provider value={{ ...this.state, getData: this.populateModel, getDefaultModel: this.getDefaultModel, changeForecastYear: this.changeForecastYear, handleReviewYear: this.handleReviewYear, populateDataPoints: this.populateDataPoints, handleGS15ReviewYear: this.handleGS15ReviewYear, changeGS15ForecastYear: this.changeGS15ForecastYear, populateGS15DataPoints: this.populateGS15DataPoints, handleForecastDateChange: this.handleForecastDateChange, generateSchedule: this.generateSchedule, handleReviewModel: this.handleReviewModel, handleDrainageModelChange: this.handleDrainageModelChange, updateModel: this.updateModel, signIn: this.signIn, newModel: this.newModel, deleteModel: this.deleteModel, getAllModels: this.getAllModels, keepLoggedIn: this.keepLoggedIn, logOut: this.logOut, signUp: this.signUp }}>
+            <InflowsContext.Provider value={{ ...this.state, getData: this.populateModel, getDefaultModel: this.getDefaultModel, changeForecastYear: this.changeForecastYear, handleReviewYear: this.handleReviewYear, populateDataPoints: this.populateDataPoints, handleGS15ReviewYear: this.handleGS15ReviewYear, changeGS15ForecastYear: this.changeGS15ForecastYear, populateGS15DataPoints: this.populateGS15DataPoints, handleForecastDateChange: this.handleForecastDateChange, generateSchedule: this.generateSchedule, handleReviewModel: this.handleReviewModel, handleDrainageModelChange: this.handleDrainageModelChange, updateModel: this.updateModel, signIn: this.signIn, newModel: this.newModel, deleteModel: this.deleteModel, getAllModels: this.getAllModels, keepLoggedIn: this.keepLoggedIn, logOut: this.logOut, signUp: this.signUp, editRatedFlow: this.editRatedFlow }}>
                 {this.props.children}
             </InflowsContext.Provider>
         )
