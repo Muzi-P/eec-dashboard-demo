@@ -37,8 +37,10 @@ class GenerateSchedule extends Component {
       GS_15: '',
       GS_2: '',
       valid: true,
+      disabled: true,
       model: '',
-      selectedDate: new Date()
+      selectedDate: new Date(),
+      validFields: ['Mkinkomo_Reservoir_Daily_Level', 'Luphohlo_Daily_Level', 'Ferreira', 'GS_15', 'GS_2']
     }
   }
   
@@ -52,10 +54,21 @@ class GenerateSchedule extends Component {
   componentDidMount = () => {
     this.context.handleForecastDateChange(this.state.startDate)
   }
-  handleInputChange = (e) => {
-    this.setState({
+  handleInputChange = async (e) => {
+    await this.setState({
       [e.target.id] : e.target.value
     })
+    const disabled = this.isValid()
+    this.setState({disabled})
+  }
+  isValid = () => {
+    let valid = false
+    this.state.validFields.forEach(item => {
+    if (this.state[item] === "") {
+        valid = true
+      }
+    })
+    return valid
   }
 
   handleGenerateSchedule = () => {
@@ -71,6 +84,7 @@ class GenerateSchedule extends Component {
 
   render() {
     const {date} = this.context
+    const {disabled} = this.state
     return (
       <>
         <div className="content">
@@ -129,19 +143,6 @@ class GenerateSchedule extends Component {
                       </Col>
                       <Col className="pl-md-1" md="3">
                         <FormGroup>
-                          <label>GS_2</label>
-                          <Input
-                            id="GS_2"
-                            required
-                            placeholder="m³/s"
-                            type="number"
-                            onChange={this.handleInputChange}
-                            value={this.state.GS_2}
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col className="pl-md-1" md="3">
-                        <FormGroup>
                           <label>GS_15</label>
                           <Input
                             id="GS_15"
@@ -150,6 +151,19 @@ class GenerateSchedule extends Component {
                             type="number"
                             value={this.state.GS_15}
                             onChange={this.handleInputChange}
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col className="pl-md-1" md="3">
+                        <FormGroup>
+                          <label>GS_2</label>
+                          <Input
+                            id="GS_2"
+                            required
+                            placeholder="m³/s"
+                            type="number"
+                            onChange={this.handleInputChange}
+                            value={this.state.GS_2}
                           />
                         </FormGroup>
                       </Col>
@@ -185,7 +199,7 @@ class GenerateSchedule extends Component {
                   </Form>
                 </CardBody>
                 <CardFooter>
-                  <Button className="btn-fill" color="primary" type="submit" onClick={this.handleGenerateSchedule}>
+                  <Button className="btn-fill" disabled={disabled} color="primary" type="submit" onClick={this.handleGenerateSchedule}>
                     Generate Schedule
                   </Button>
                 </CardFooter>

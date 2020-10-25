@@ -514,7 +514,7 @@ class InflowsProvider extends Component {
         await this.setState({ezulwini})
     } 
 
-    calcEzWater = (watts, hours) => watts * hours * 0.5238 * 60 * 60 
+    calcEzWater = (watts, hours) => watts * hours * (parseInt(this.state.ezulwiniPS.Genarators[0].Rated_Flow)) * 60 * 60 
 
     /*update summary */
     updateSummary = (text, value) => {
@@ -529,17 +529,15 @@ class InflowsProvider extends Component {
 
     /*post new inflows */
     postInflow = (inflow) => {
-        // axios.post( 
-        //     `${process.env.REACT_APP_API}/inflows`,
-        //     inflow,
-        //     this.state.config
-        //   ).then( res => {
-        //       console.log(res)
-        //       this.alert("Inflows Added", `Date: ${res.data.Day_of_Input}`)
-        //     //   this.getAllModels()
-        //   })
-        //   .catch(res => console.log(res));
-
+        axios.post( 
+            `${process.env.REACT_APP_API}/inflows`,
+            inflow,
+            this.state.config
+          ).then( res => {
+              console.log(res)
+              this.alert("Inflows Added", `Date: ${res.data.Day_of_Input}`)
+          })
+          .catch(res => console.log(res));
     }
     /*edit rate flow */
     editRatedFlow = (powerStation) => {
