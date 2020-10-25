@@ -19,7 +19,23 @@ export class Ezulwini extends Component {
   constructor(props) {
     super()
     this.state = {
-      ezulwiniPS: {},
+      ezulwiniPS: {
+        Name: 'Edwaleni Power Station',
+        Rated_Head: '262',
+        Total_Power_Output: '15',
+        Genarators: [
+          {
+            Rated_Power: '2.5',
+            Rated_Flow: '0.240',
+            Units: '4'
+          },
+          {
+            Rated_Power: '5',
+            Rated_Flow: '0.470',
+            Units: '1'
+          }
+        ]
+      },
       disabled: true
     }
   }

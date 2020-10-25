@@ -19,7 +19,18 @@ export class Maguduza extends Component {
   constructor(props) {
     super()
     this.state = {
-      maguduzaPS: {},
+      maguduzaPS: {
+        Name: 'Maguduza Power Station',
+        Rated_Head: '64.2',
+        Total_Power_Output: '5.6',
+        Genarators: [
+          {
+            Rated_Power: '5.6',
+            Rated_Flow: '11.10',
+            Units: '1'
+          }
+        ]
+      },
       disabled: true
     }
   }
