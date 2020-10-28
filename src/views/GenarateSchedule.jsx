@@ -109,6 +109,18 @@ class GenerateSchedule extends Component {
       }
     }
   }
+  gsOnfocusOut = (e) => {
+    let currentValue = e.target.value
+    if (currentValue.includes('.')) {
+      const split = currentValue.split('.')
+      if (split[0] === '') {
+        currentValue = `0.${split[1]}`
+        this.setState({
+          [e.target.id] : currentValue
+        })
+      }
+    }
+  }
 
   render() {
     const {date} = this.context
@@ -178,6 +190,7 @@ class GenerateSchedule extends Component {
                             required
                             placeholder="m³/s"
                             type="number"
+                            onBlur={this.gsOnfocusOut}
                             value={this.state.GS_15}
                             onChange={this.handleInputChange}
                           />
@@ -192,6 +205,7 @@ class GenerateSchedule extends Component {
                             placeholder="m³/s"
                             type="number"
                             onChange={this.handleInputChange}
+                            onBlur={this.gsOnfocusOut}
                             value={this.state.GS_2}
                           />
                         </FormGroup>
@@ -220,6 +234,7 @@ class GenerateSchedule extends Component {
                             required
                             placeholder="m³/s"
                             type="number"
+                            onBlur={this.gsOnfocusOut}
                             value={this.state.Ferreira}
                             onChange={this.handleInputChange}
                           />
