@@ -131,7 +131,7 @@ export class Edwaleni extends Component {
                       onChange={this.handleEdwaleniInputChange}
                       value={edwaleniPS.Genarators[0].Rated_Flow}
                       id="Rated_Flow"
-                      type="text" 
+                      type="number"
                   />
                 </FormGroup>
               </Col>
@@ -161,7 +161,7 @@ export class Edwaleni extends Component {
                      onChange={this.handleEdwaleniRatedInputChange}
                      value={edwaleniPS.Genarators[1].Rated_Flow}
                       id="Rated_Flow"
-                      type="text" 
+                      type="number"
                   />
                 </FormGroup>
               </Col>

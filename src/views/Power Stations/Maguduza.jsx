@@ -118,7 +118,7 @@ export class Maguduza extends Component {
                       onChange={this.handleMaguduzaInputChange}
                       value={maguduzaPS.Genarators[0].Rated_Flow}
                       id="Rated_Flow"
-                      type="text" 
+                      type="number" 
                   />
                 </FormGroup>
               </Col>

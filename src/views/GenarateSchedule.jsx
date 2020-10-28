@@ -81,6 +81,34 @@ class GenerateSchedule extends Component {
   generateSchedule = () => {
     this.context.generateSchedule(this.state)
   }
+  mkinkomoOnfocusOut = (e) => {
+    let currentValue = e.target.value
+    if (currentValue === '') {
+      return
+    } else {
+      currentValue = parseFloat(currentValue)
+      if (currentValue <= 5) {
+        currentValue = 589.5 + currentValue
+        this.setState({
+          [e.target.id] : currentValue
+        })
+      }
+    }
+  }
+  luphohloOnfocusOut = (e) => {
+    let currentValue = e.target.value
+    if (currentValue === '') {
+      return
+    } else {
+      currentValue = parseFloat(currentValue)
+      if (currentValue <= 20) {
+        currentValue = 1015.6 + currentValue
+        this.setState({
+          [e.target.id] : currentValue
+        })
+      }
+    }
+  }
 
   render() {
     const {date} = this.context
@@ -133,10 +161,11 @@ class GenerateSchedule extends Component {
                           <label>Luphohlo Daily Level</label>
                           <Input
                             id="Luphohlo_Daily_Level"
-                            placeholder="m.s.l."
+                            placeholder="m.a.s.l."
                             required
                             type="number"
                             value={this.state.Luphohlo_Daily_Level}
+                            onBlur={this.luphohloOnfocusOut}
                             onChange={this.handleInputChange}
                           />
                         </FormGroup>
@@ -175,10 +204,11 @@ class GenerateSchedule extends Component {
                           <Input
                             id="Mkinkomo_Reservoir_Daily_Level"
                             required
-                            placeholder="m.s.l."
+                            placeholder="m.a.s.l."
                             type="number"
                             value={this.state.Mkinkomo_Reservoir_Daily_Level}
                             onChange={this.handleInputChange}
+                            onBlur={this.mkinkomoOnfocusOut}
                           />
                         </FormGroup>
                       </Col>

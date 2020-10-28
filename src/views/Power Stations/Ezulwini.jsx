@@ -123,7 +123,7 @@ export class Ezulwini extends Component {
                         onChange={this.handleEzuwliniInputChange}
                         value={ezulwiniPS.Genarators[0].Rated_Flow}
                         id="Rated_Flow"
-                        type="text" 
+                        type="number"
                     />
                   </FormGroup>
                 </Col>
