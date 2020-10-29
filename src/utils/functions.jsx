@@ -191,16 +191,19 @@ const methods = {
             if (level >= 1013.5 && level <= 1014){
             result = 20500000
             } else 
-            if (level >= 1014.1 && level <= 1014.4){
+            if (level >= 1014.1 && level <= 1014.3){
             result = 21500000
-            } else 
+            } else
+            if (level > 1014.3 && level <= 1014.4){
+              result = 21240000
+              } else 
             if (level >= 1014.5 && level <= 1015){
             result = 22000000
             } else 
             if (level >= 1015.1 && level <= 1015.6){
             result = 23600000
             } else 
-            if (level >= 1015.6 && level <= 1016){
+            if (level > 1015.6 && level <= 1016){
             result = 23600000
             }
     return result

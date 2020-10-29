@@ -54,6 +54,7 @@ class GenerateSchedule extends Component {
   componentDidMount = () => {
     this.context.handleForecastDateChange(this.state.startDate)
   }
+  
   handleInputChange = async (e) => {
     await this.setState({
       [e.target.id] : e.target.value
@@ -121,6 +122,51 @@ class GenerateSchedule extends Component {
       }
     }
   }
+  loadPreviousInflows = async (e) => {
+    const {inflows} = this.context
+    var lastInflow = inflows.slice(-1)[0]
+    const {
+      Mkinkomo_Reservoir_Daily_Level,
+      Luphohlo_Daily_Level,
+      Ferreira,
+      GS_15,
+      GS_2,
+      Day_of_Input
+    } = lastInflow
+    await this.setState({
+      Mkinkomo_Reservoir_Daily_Level
+    })
+    await this.setState({
+      Luphohlo_Daily_Level
+    })
+    await this.setState({
+      Ferreira
+    })
+    await this.setState({
+      GS_15
+    })
+    await this.setState({
+      GS_2
+    })
+    await this.setState({
+      startDate: new Date (Day_of_Input)
+    })
+    const disabled = this.isValid()
+    this.setState({disabled})
+  }
+  formatDate = (date) => {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+}
 
   render() {
     const {date} = this.context
@@ -246,6 +292,9 @@ class GenerateSchedule extends Component {
                 <CardFooter>
                   <Button className="btn-fill" disabled={disabled} color="primary" type="submit" onClick={this.handleGenerateSchedule}>
                     Generate Schedule
+                  </Button>
+                  <Button className="btn-fill"  color="info" type="submit" onClick={this.loadPreviousInflows}>
+                    Load Previous Inflows
                   </Button>
                 </CardFooter>
               </Card>

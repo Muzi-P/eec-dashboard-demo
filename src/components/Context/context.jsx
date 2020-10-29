@@ -380,6 +380,19 @@ class InflowsProvider extends Component {
         }
         
     }
+    formatDate = (date) => {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+    
+        if (month.length < 2) 
+            month = '0' + month;
+        if (day.length < 2) 
+            day = '0' + day;
+    
+        return [year, month, day].join('-');
+    }
     generateSchedule = async (state) => {
         const {
             startDate, 
@@ -393,7 +406,7 @@ class InflowsProvider extends Component {
         let selectedModel = this.state.models.filter(models => models.Model_Name === model)
         await this.setState({currentModel: selectedModel})
         const inflow = {
-            "Day_of_Input": startDate,
+            "Day_of_Input": this.formatDate(startDate),
             "GS_2": GS_2,
             "GS_15": GS_15,
             "Ferreira": Ferreira,
@@ -403,32 +416,77 @@ class InflowsProvider extends Component {
         await this.postInflow(inflow)
         this.updateSummary('Current Model', model)
         this.updateSummary('Current Month', this.state.months[startDate.getMonth()] )
-        const limit = this.state.currentModel[0].Opt[startDate.getMonth()].y
-        this.updateSummary('Monthly Limit (m.a.s.l)', limit)
-        const volume = this.state.utils.methods.levelToVol(parseInt(limit))
-        const percent = ((volume / 23600000) * 100).toFixed(2)
-        this.updateSummary('Monthly Limit (%)', percent)
+        let limit = this.state.currentModel[0].Opt[startDate.getMonth()].y
         const dayVolume = this.state.utils.methods.levelToVol(parseInt(Luphohlo_Daily_Level))
+        let volume
+
+        const month = startDate.getMonth()
+        const day = startDate.getDay()
+        if (month === 5 || month === 6 || month === 7) {
+            if (day === 6 || day === 0) {
+                // weekends and peak season
+                // only generate if there is a spillage
+                limit = 1015.6
+                volume = this.state.utils.methods.levelToVol(limit)
+                await this.calculateDailyReq(parseInt(GS_15), parseInt(volume), parseInt(dayVolume))
+            } else {
+                // weekday and peak season
+                volume = this.state.utils.methods.levelToVol(parseInt(limit))
+                await this.calculateDailyReq(parseInt(GS_15), parseInt(volume), parseInt(dayVolume))
+            }
+        } else {
+            if (day === 6 || day === 0) {
+                // weekends off-peak season
+                // only generate if dam is above 90%
+                limit = 1014.35
+                volume = this.state.utils.methods.levelToVol(limit)
+                await this.calculateDailyReq(parseInt(GS_15), parseInt(volume), parseInt(dayVolume))
+            } else {
+                // weekday and off-peak season
+                volume = this.state.utils.methods.levelToVol(parseInt(limit))
+                await this.calculateDailyReq(parseInt(GS_15), parseInt(volume), parseInt(dayVolume))
+            }
+        }
         
-        await this.calculateDailyReq(parseInt(GS_15), parseInt(volume), parseInt(dayVolume))
+        
+        const percent = ((volume / 23600000) * 100).toFixed(2)
+        this.updateSummary('Monthly Limit (m.a.s.l)', limit)
+        this.updateSummary('Monthly Limit (%)', percent)
+        
         this.populateSchedule(startDate, Luphohlo_Daily_Level)
 
     }
     populateSchedule = (startDate, Luphohlo_Daily_Level) => {
         const month = startDate.getMonth()
         const day = startDate.getDay()
-        console.log(month)
-        if (day === 6 || day === 0) {
-            // weekends
-        } else {
-            if (month === 5 || month === 6 || month === 7) {
+        if (month === 5 || month === 6 || month === 7) {
+            if (day === 6 || day === 0) {
+                // weekends and peak season
+                // only generate if there is a spillage
+            } else {
                 // weekday and peak season
                 this.populateScheduleWeekDayPeakSeason(Luphohlo_Daily_Level)
+            }
+        } else {
+            if (day === 6 || day === 0) {
+                // weekends off-peak season
+                // only generate if dam is above 90%
             } else {
                 // weekday and off-peak season
                 this.populateScheduleWeekDayOffPeak()
             }
         }
+        // if (day === 6 || day === 0) {
+        //     // weekends
+        // } else {
+        //     if (month === 5 || month === 6 || month === 7) {
+        //         // weekday and peak season
+        //         this.populateScheduleWeekDayPeakSeason(Luphohlo_Daily_Level)
+        //     } else {
+        //         // weekday and off-peak season
+        //         this.populateScheduleWeekDayOffPeak()
+        //     }
+        // }
         this.calcSum ()
        
     }
@@ -503,13 +561,37 @@ class InflowsProvider extends Component {
         const OFFPEAKHALFLOAD = STANDARD - TOTAL_WATER_NEEDED_FOR_OFF_PEAK_HALF_LOAD // E32 = C29 - E31
         const OFFPEAKFULLLOAD =  STANDARD - TOTAL_WATER_NEEDED_FOR_OFF_PEAK_FULL_LOAD // E34 = C29 - E33
 
+        /* saturday */
+        const TOTAL_WATER_NEEDED_FOR_STND_SAT_FULL_LOAD = this.calcEzWater(20,7)
+        const TOTAL_WATER_NEEDED_FOR_STND_SAT_HALF_LOAD = this.calcEzWater(10,7)
+        const TOTAL_WATER_NEEDED_FOR_OFF_PEAK_SAT_FULL_LOAD = this.calcEzWater(20,17)
+        const TOTAL_WATER_NEEDED_FOR_OFF_PEAK_SAT_HALF_LOAD = this.calcEzWater(10,17)
+
+        const SAT_STANDARD = TOTAL_DAILY_AVAILABLE_WATER - TOTAL_WATER_NEEDED_FOR_STND_SAT_FULL_LOAD
+        const SAT_STANDARDHALFLOAD = TOTAL_DAILY_AVAILABLE_WATER - TOTAL_WATER_NEEDED_FOR_STND_SAT_HALF_LOAD 
+        const SAT_OFFPEAKHALFLOAD = SAT_STANDARD - TOTAL_WATER_NEEDED_FOR_OFF_PEAK_SAT_HALF_LOAD 
+        const SAT_OFFPEAKFULLLOAD =  SAT_STANDARD - TOTAL_WATER_NEEDED_FOR_OFF_PEAK_SAT_FULL_LOAD
+
+        /* sunday */
+        const TOTAL_WATER_NEEDED_FOR_OFF_PEAK_SUN_FULL_LOAD = this.calcEzWater(20,24)
+        const TOTAL_WATER_NEEDED_FOR_OFF_PEAK_SUN_HALF_LOAD = this.calcEzWater(10,24)
+
+        const SUN_OFFPEAKHALFLOAD = TOTAL_DAILY_AVAILABLE_WATER - TOTAL_WATER_NEEDED_FOR_OFF_PEAK_SUN_FULL_LOAD 
+        const SUN_OFFPEAKFULLLOAD =  TOTAL_DAILY_AVAILABLE_WATER - TOTAL_WATER_NEEDED_FOR_OFF_PEAK_SUN_HALF_LOAD
+
         const ezulwini = {
             PEAK,
             PEAKHALFLOAD,
             STANDARD,
             STANDARDHALFLOAD,
             OFFPEAKHALFLOAD,
-            OFFPEAKFULLLOAD 
+            OFFPEAKFULLLOAD,
+            SAT_STANDARD,
+            SAT_STANDARDHALFLOAD,
+            SAT_OFFPEAKHALFLOAD,
+            SAT_OFFPEAKFULLLOAD,
+            SUN_OFFPEAKHALFLOAD,
+            SUN_OFFPEAKFULLLOAD 
         }
         await this.setState({ezulwini})
     } 
@@ -534,8 +616,7 @@ class InflowsProvider extends Component {
             inflow,
             this.state.config
           ).then( res => {
-              console.log(res)
-              this.alert("Inflows Added", `Date: ${res.data.Day_of_Input}`)
+              this.alert("Inflows Added", `Date: ${res.data.Day_of_Input.split('T')[0]}`)
           })
           .catch(res => console.log(res));
     }
