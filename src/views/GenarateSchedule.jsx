@@ -194,6 +194,7 @@ class GenerateSchedule extends Component {
                             variant="inline"
                             inputVariant="outlined"
                             format="MM/dd/yyyy"
+                            views={["year", "month", "date"]}
                             value={this.state.startDate}
                             InputAdornmentProps={{ position: "start" }}
                             onChange={date => this.handleChange(date)}

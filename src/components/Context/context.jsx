@@ -58,6 +58,14 @@ class InflowsProvider extends Component {
                     value: ''
                 },
                 {
+                    text: 'Initial Dam Level (m.a.s.l)',
+                    value: ''
+                },
+                {
+                    text: 'Initial Dam Level (%)',
+                    value: ''
+                },
+                {
                     text: 'Available Water (mil. m³)',
                     value: ''
                 },
@@ -150,7 +158,6 @@ class InflowsProvider extends Component {
         this.setState({years})
         this.setState({gs15ReviewYears: years})
 
-        // this.postToNode(inflows)
     }
     getAllModelNames = (models) => {
         let modelNames = []
@@ -393,6 +400,7 @@ class InflowsProvider extends Component {
     
         return [year, month, day].join('-');
     }
+    volumeToPerc = (volume) => ((volume / 23600000) * 100).toFixed(2)
     generateSchedule = async (state) => {
         const {
             startDate, 
@@ -415,9 +423,11 @@ class InflowsProvider extends Component {
         }
         await this.postInflow(inflow)
         this.updateSummary('Current Model', model)
+        this.updateSummary('Initial Dam Level (m.a.s.l)', Luphohlo_Daily_Level)
         this.updateSummary('Current Month', this.state.months[startDate.getMonth()] )
         let limit = this.state.currentModel[0].Opt[startDate.getMonth()].y
-        const dayVolume = this.state.utils.methods.levelToVol(parseInt(Luphohlo_Daily_Level))
+        const dayVolume = this.state.utils.methods.levelToVol(parseFloat(Luphohlo_Daily_Level))
+        this.updateSummary('Initial Dam Level (%)', this.volumeToPerc(dayVolume))
         let volume
 
         const month = startDate.getMonth()
@@ -428,11 +438,11 @@ class InflowsProvider extends Component {
                 // only generate if there is a spillage
                 limit = 1015.6
                 volume = this.state.utils.methods.levelToVol(limit)
-                await this.calculateDailyReq(parseInt(GS_15), parseInt(volume), parseInt(dayVolume))
+                await this.calculateDailyReq(parseFloat(GS_15), parseInt(volume), parseInt(dayVolume))
             } else {
                 // weekday and peak season
                 volume = this.state.utils.methods.levelToVol(parseInt(limit))
-                await this.calculateDailyReq(parseInt(GS_15), parseInt(volume), parseInt(dayVolume))
+                await this.calculateDailyReq(parseFloat(GS_15), parseInt(volume), parseInt(dayVolume))
             }
         } else {
             if (day === 6 || day === 0) {
@@ -440,11 +450,11 @@ class InflowsProvider extends Component {
                 // only generate if dam is above 90%
                 limit = 1014.35
                 volume = this.state.utils.methods.levelToVol(limit)
-                await this.calculateDailyReq(parseInt(GS_15), parseInt(volume), parseInt(dayVolume))
+                await this.calculateDailyReq(parseFloat(GS_15), parseInt(volume), parseInt(dayVolume))
             } else {
                 // weekday and off-peak season
                 volume = this.state.utils.methods.levelToVol(parseInt(limit))
-                await this.calculateDailyReq(parseInt(GS_15), parseInt(volume), parseInt(dayVolume))
+                await this.calculateDailyReq(parseFloat(GS_15), parseInt(volume), parseInt(dayVolume))
             }
         }
         
@@ -463,6 +473,7 @@ class InflowsProvider extends Component {
             if (day === 6 || day === 0) {
                 // weekends and peak season
                 // only generate if there is a spillage
+                this.populateScheduleWeekEndOffPeak(day)
             } else {
                 // weekday and peak season
                 this.populateScheduleWeekDayPeakSeason(Luphohlo_Daily_Level)
@@ -471,24 +482,71 @@ class InflowsProvider extends Component {
             if (day === 6 || day === 0) {
                 // weekends off-peak season
                 // only generate if dam is above 90%
+                this.populateScheduleWeekEndOffPeak(day)
             } else {
                 // weekday and off-peak season
                 this.populateScheduleWeekDayOffPeak()
             }
         }
-        // if (day === 6 || day === 0) {
-        //     // weekends
-        // } else {
-        //     if (month === 5 || month === 6 || month === 7) {
-        //         // weekday and peak season
-        //         this.populateScheduleWeekDayPeakSeason(Luphohlo_Daily_Level)
-        //     } else {
-        //         // weekday and off-peak season
-        //         this.populateScheduleWeekDayOffPeak()
-        //     }
-        // }
         this.calcSum ()
        
+    }
+    populateScheduleWeekEndOffPeak = async (day) => {
+        let waterConsumed = 0
+        let generatedSchedule = this.state.utils.methods.ezulwiniShutDown(this.state.currentSchedule)
+        const {
+            SAT_STANDARD,
+            SAT_STANDARDHALFLOAD,
+            SAT_OFFPEAKHALFLOAD,
+            SAT_OFFPEAKFULLLOAD,
+            SUN_OFFPEAKHALFLOAD,
+            SUN_OFFPEAKFULLLOAD,
+            TOTAL_WATER_NEEDED_FOR_STND_SAT_FULL_LOAD,
+            TOTAL_WATER_NEEDED_FOR_OFF_PEAK_SAT_FULL_LOAD,
+            TOTAL_WATER_NEEDED_FOR_STND_SAT_HALF_LOAD,
+            TOTAL_WATER_NEEDED_FOR_OFF_PEAK_SAT_HALF_LOAD, 
+            TOTAL_WATER_NEEDED_FOR_OFF_PEAK_SUN_FULL_LOAD,
+            TOTAL_WATER_NEEDED_FOR_OFF_PEAK_SUN_HALF_LOAD,
+            DAILY_LUPHOHLO_INFLOW,
+            INITIAL_LUPHOHLO_DAM_VOLUME
+        } = this.state.ezulwini
+        if (day === 6) {
+            // saturday
+            if ((SAT_STANDARDHALFLOAD === 0 || SAT_STANDARDHALFLOAD > 0) && SAT_STANDARD < 0) {
+                generatedSchedule = this.state.utils.methods.ezulwiniStandardHalfLoad(generatedSchedule)
+                waterConsumed = waterConsumed + TOTAL_WATER_NEEDED_FOR_STND_SAT_HALF_LOAD
+            }
+            if (SAT_STANDARD === 0 || SAT_STANDARD > 0) {
+                generatedSchedule = this.state.utils.methods.ezulwiniStandardFullLoad(generatedSchedule)
+                waterConsumed = waterConsumed + TOTAL_WATER_NEEDED_FOR_STND_SAT_FULL_LOAD
+            }
+            if ((SAT_OFFPEAKHALFLOAD === 0 || SAT_OFFPEAKHALFLOAD > 0) && SAT_OFFPEAKFULLLOAD < 0) {
+                generatedSchedule = this.state.utils.methods.ezulwiniOffPeakHalfLoad(generatedSchedule)
+                waterConsumed = waterConsumed + TOTAL_WATER_NEEDED_FOR_OFF_PEAK_SAT_HALF_LOAD
+            }
+            if (SAT_OFFPEAKFULLLOAD === 0 || SAT_OFFPEAKFULLLOAD > 0) {
+                generatedSchedule = this.state.utils.methods.ezulwiniOffPeakFullLoad(generatedSchedule)
+                waterConsumed = waterConsumed + TOTAL_WATER_NEEDED_FOR_OFF_PEAK_SAT_FULL_LOAD
+            }
+        } else {
+            // sunday
+            if ((SUN_OFFPEAKHALFLOAD === 0 || SUN_OFFPEAKHALFLOAD > 0) && SUN_OFFPEAKFULLLOAD < 0) {
+                generatedSchedule = this.state.utils.methods.ezulwiniOffPeakHalfLoad(generatedSchedule)
+                waterConsumed = waterConsumed + TOTAL_WATER_NEEDED_FOR_OFF_PEAK_SUN_HALF_LOAD
+            }
+            if (SUN_OFFPEAKFULLLOAD === 0 || SUN_OFFPEAKFULLLOAD > 0) {
+                generatedSchedule = this.state.utils.methods.ezulwiniOffPeakHalfLoad(generatedSchedule)
+                waterConsumed = waterConsumed + TOTAL_WATER_NEEDED_FOR_OFF_PEAK_SUN_FULL_LOAD
+            }
+        }
+
+        let finalDamVolume = (DAILY_LUPHOHLO_INFLOW + INITIAL_LUPHOHLO_DAM_VOLUME) - waterConsumed
+        finalDamVolume = this.volumeToPerc(finalDamVolume)
+
+        waterConsumed = (waterConsumed / 1000000).toFixed(2)
+        this.updateSummary('Water Used (mil. m³)', waterConsumed)
+        this.updateSummary('Final Dam Level(%)', finalDamVolume)
+        await this.setState({currentSchedule: generatedSchedule})
     }
     populateScheduleWeekDayOffPeak = async () => {
         const {
@@ -496,33 +554,45 @@ class InflowsProvider extends Component {
             STANDARD,
             STANDARDHALFLOAD,
             OFFPEAKHALFLOAD,
-            OFFPEAKFULLLOAD 
+            OFFPEAKFULLLOAD,
+            TOTAL_WATER_NEEDED_FOR_PEAK_FULL_LOAD,
+            TOTAL_WATER_NEEDED_FOR_STND_FULL_LOAD,
+            TOTAL_WATER_NEEDED_FOR_STND_HALF_LOAD,
+            TOTAL_WATER_NEEDED_FOR_OFF_PEAK_FULL_LOAD,
+            TOTAL_WATER_NEEDED_FOR_OFF_PEAK_HALF_LOAD,
+            DAILY_LUPHOHLO_INFLOW,
+            INITIAL_LUPHOHLO_DAM_VOLUME
         } = this.state.ezulwini
         let generatedSchedule = this.state.utils.methods.ezulwiniShutDown(this.state.currentSchedule)
         let waterConsumed = 0
 
         if (PEAK === 0 || PEAK > 0) {
             generatedSchedule = this.state.utils.methods.ezulwiniPeakFullLoad(generatedSchedule)
-            waterConsumed = waterConsumed + PEAK
+            waterConsumed = waterConsumed + TOTAL_WATER_NEEDED_FOR_PEAK_FULL_LOAD
         }
         if (PEAK > 0 && STANDARDHALFLOAD > 0 && STANDARD < 0) {
             generatedSchedule = this.state.utils.methods.ezulwiniStandardHalfLoad(generatedSchedule)
-            waterConsumed = waterConsumed + STANDARDHALFLOAD
+            waterConsumed = waterConsumed + TOTAL_WATER_NEEDED_FOR_STND_HALF_LOAD
         }
         if (PEAK > 0 && STANDARD > 0) {
             generatedSchedule = this.state.utils.methods.ezulwiniStandardFullLoad(generatedSchedule)
-            waterConsumed = (waterConsumed - STANDARDHALFLOAD) + STANDARD
+            waterConsumed = waterConsumed + TOTAL_WATER_NEEDED_FOR_STND_FULL_LOAD
         }
         if (OFFPEAKHALFLOAD > 0 && PEAK > 0 && OFFPEAKFULLLOAD < 0) {
             generatedSchedule = this.state.utils.methods.ezulwiniOffPeakHalfLoad(generatedSchedule)
-            waterConsumed = waterConsumed + OFFPEAKHALFLOAD
+            waterConsumed = waterConsumed + TOTAL_WATER_NEEDED_FOR_OFF_PEAK_HALF_LOAD
         }
         if (OFFPEAKFULLLOAD > 0 && PEAK > 0 ) {
             generatedSchedule = this.state.utils.methods.ezulwiniOffPeakFullLoad(generatedSchedule)
-            waterConsumed = (waterConsumed - OFFPEAKHALFLOAD) + OFFPEAKFULLLOAD
+            waterConsumed = waterConsumed + TOTAL_WATER_NEEDED_FOR_OFF_PEAK_FULL_LOAD
         }
+
+        let finalDamVolume = (DAILY_LUPHOHLO_INFLOW + INITIAL_LUPHOHLO_DAM_VOLUME) - waterConsumed
+        finalDamVolume = this.volumeToPerc(finalDamVolume)
         waterConsumed = (waterConsumed / 1000000).toFixed(2)
+
         this.updateSummary('Water Used (mil. m³)', waterConsumed)
+        this.updateSummary('Final Dam Level(%)', finalDamVolume)
         await this.setState({currentSchedule: generatedSchedule})
     }
     populateScheduleWeekDayPeakSeason = async (Luphohlo_Daily_Level) => {
@@ -591,19 +661,33 @@ class InflowsProvider extends Component {
             SAT_OFFPEAKHALFLOAD,
             SAT_OFFPEAKFULLLOAD,
             SUN_OFFPEAKHALFLOAD,
-            SUN_OFFPEAKFULLLOAD 
+            SUN_OFFPEAKFULLLOAD,
+            TOTAL_WATER_NEEDED_FOR_STND_SAT_FULL_LOAD,
+            TOTAL_WATER_NEEDED_FOR_OFF_PEAK_SAT_FULL_LOAD,
+            TOTAL_WATER_NEEDED_FOR_STND_SAT_HALF_LOAD,
+            TOTAL_WATER_NEEDED_FOR_OFF_PEAK_SAT_HALF_LOAD, 
+            TOTAL_WATER_NEEDED_FOR_OFF_PEAK_SUN_FULL_LOAD,
+            TOTAL_WATER_NEEDED_FOR_OFF_PEAK_SUN_HALF_LOAD,
+            TOTAL_WATER_NEEDED_FOR_PEAK_FULL_LOAD,
+            TOTAL_WATER_NEEDED_FOR_PEAK_HALF_LOAD,
+            TOTAL_WATER_NEEDED_FOR_STND_FULL_LOAD,
+            TOTAL_WATER_NEEDED_FOR_STND_HALF_LOAD,
+            TOTAL_WATER_NEEDED_FOR_OFF_PEAK_FULL_LOAD,
+            TOTAL_WATER_NEEDED_FOR_OFF_PEAK_HALF_LOAD,
+            DAILY_LUPHOHLO_INFLOW,
+            INITIAL_LUPHOHLO_DAM_VOLUME
         }
         await this.setState({ezulwini})
     } 
 
-    calcEzWater = (watts, hours) => watts * hours * (parseInt(this.state.ezulwiniPS.Genarators[0].Rated_Flow)) * 60 * 60 
+    calcEzWater = (watts, hours) => watts * hours * (parseFloat(this.state.ezulwiniPS.Genarators[0].Rated_Flow)) * 60 * 60 
 
     /*update summary */
-    updateSummary = (text, value) => {
+    updateSummary = async (text, value) => {
         const elementsIndex = this.state.summary.findIndex(element => element.text === text )
         let newSummary = [...this.state.summary]
         newSummary[elementsIndex] = {...newSummary[elementsIndex], value: value}
-        this.setState({
+        await this.setState({
             summary: newSummary,
         });
         
