@@ -44,9 +44,8 @@ class GenerateSchedule extends Component {
     }
   }
   
-  handleChange = date => {
-    this.context.handleForecastDateChange(date)
-    this.setState({
+  handleChange = async (date) => {
+    await this.setState({
       startDate: date
     })
     this.context.handleForecastDateChange(this.state.startDate)
