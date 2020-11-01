@@ -380,9 +380,13 @@ class InflowsProvider extends Component {
         let day = date.getDay()
         if(day === 6 ) {
             this.setState({currentSchedule: this.state.weekEndGenSchedule})
-        } else if(day === 0) {
+        }
+        
+        if(day === 0) {
             this.setState({currentSchedule: this.state.weekSunGenSchedule})
-        } else {
+        }
+        
+        if(day !== 6 && day !== 0){
             this.setState({currentSchedule: this.state.weekDayGenSchedule})
         }
         
