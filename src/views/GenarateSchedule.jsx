@@ -49,6 +49,7 @@ class GenerateSchedule extends Component {
     this.setState({
       startDate: date
     })
+    this.context.handleForecastDateChange(this.state.startDate)
   }
 
   componentDidMount = () => {
@@ -153,21 +154,9 @@ class GenerateSchedule extends Component {
     })
     const disabled = this.isValid()
     this.setState({disabled})
+    this.context.handleForecastDateChange(this.state.startDate)
+
   }
-  formatDate = (date) => {
-    var d = new Date(date),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear();
-
-    if (month.length < 2) 
-        month = '0' + month;
-    if (day.length < 2) 
-        day = '0' + day;
-
-    return [year, month, day].join('-');
-}
-
   render() {
     const {date} = this.context
     const {disabled} = this.state

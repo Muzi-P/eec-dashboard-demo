@@ -415,41 +415,77 @@ const methods = {
     })
     return schedule
   },
+  /*****All Stations ShutDown *********/ 
+  allShutDown: (schedule) => {
+    schedule.forEach(item => {
+      item.MAGUDUZA = '0'
+      item.EZULWINI = '0'
+      item.EDWALENI = '0'
+    })
+    return schedule
+  },
   /*****Calculate Sum *********/ 
   calcSum: (schedule) => {
     let ezulwiniSum = 0 
     let ezulwiniSumPeak = 0 
     let ezulwiniSumStnd = 0 
     let ezulwiniSumOffPeak = 0
+
+    let edwaleniSum = 0
+    let edwaleniSumPeak = 0 
+    let edwaleniSumStnd = 0 
+    let edwaleniSumOffPeak = 0 
+
+    let maguduzaSum = 0
+    let maguduzaSumPeak = 0 
+    let maguduzaSumStnd = 0 
+    let maguduzaSumOffPeak = 0 
+
     schedule.forEach(item => {
       /* sum */
       ezulwiniSum = ezulwiniSum + parseInt(item.EZULWINI)
+      edwaleniSum = edwaleniSum + parseFloat(item.EDWALENI)
+      maguduzaSum = maguduzaSum + parseFloat(item.MAGUDUZA)
       if (item.Period === 'SUM') {
-        item.EZULWINI = ezulwiniSum
+        item.EZULWINI = Math.round(ezulwiniSum * 10) / 10
+        item.EDWALENI =  Math.round(edwaleniSum * 10) / 10
+        item.MAGUDUZA =  Math.round(maguduzaSum * 10) / 10
       }
 
       /* Peak sum */
       if (item.Period === 'Peak') {
         ezulwiniSumPeak = ezulwiniSumPeak + parseInt(item.EZULWINI)
+        edwaleniSumPeak = edwaleniSumPeak + parseFloat(item.EDWALENI)
+        maguduzaSumPeak = maguduzaSumPeak + parseFloat(item.MAGUDUZA)
       }
       if (item.Period === 'PEAK') {
         item.EZULWINI = ezulwiniSumPeak
+        item.EDWALENI =  Math.round(edwaleniSumPeak * 10) / 10
+        item.MAGUDUZA =  Math.round(maguduzaSumPeak * 10) / 10
       }
 
        /* Standard sum */
        if (item.Period === 'Standard') {
         ezulwiniSumStnd = ezulwiniSumStnd + parseInt(item.EZULWINI)
+        edwaleniSumStnd = edwaleniSumStnd + parseFloat(item.EDWALENI)
+        maguduzaSumStnd = maguduzaSumStnd + parseFloat(item.MAGUDUZA)
       }
       if (item.Period === 'STANDARD') {
         item.EZULWINI = ezulwiniSumStnd
+        item.EDWALENI =  Math.round(edwaleniSumStnd * 10) / 10
+        item.MAGUDUZA =  Math.round(maguduzaSumStnd * 10) / 10
       }
 
       /* Off-Peak sum */
       if (item.Period === 'Off-Peak') {
         ezulwiniSumOffPeak = ezulwiniSumOffPeak + parseInt(item.EZULWINI)
+        edwaleniSumOffPeak = edwaleniSumOffPeak + parseFloat(item.EDWALENI)
+        maguduzaSumOffPeak = maguduzaSumOffPeak + parseFloat(item.MAGUDUZA)
       }
       if (item.Period === 'OFF-PEAK') {
         item.EZULWINI = ezulwiniSumOffPeak
+        item.EDWALENI =  Math.round(edwaleniSumOffPeak * 10) / 10
+        item.MAGUDUZA =  Math.round(maguduzaSumOffPeak * 10) / 10
       }
     })
     return schedule

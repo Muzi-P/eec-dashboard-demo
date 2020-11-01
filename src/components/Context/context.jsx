@@ -463,10 +463,10 @@ class InflowsProvider extends Component {
         this.updateSummary('Monthly Limit (m.a.s.l)', limit)
         this.updateSummary('Monthly Limit (%)', percent)
         
-        this.populateSchedule(startDate, Luphohlo_Daily_Level)
+        this.populateSchedule(startDate, Luphohlo_Daily_Level, parseFloat(GS_2), parseFloat(Ferreira))
 
     }
-    populateSchedule = (startDate, Luphohlo_Daily_Level) => {
+    populateSchedule = (startDate, Luphohlo_Daily_Level, GS_2, Ferreira ) => {
         const month = startDate.getMonth()
         const day = startDate.getDay()
         if (month === 5 || month === 6 || month === 7) {
@@ -485,7 +485,7 @@ class InflowsProvider extends Component {
                 this.populateScheduleWeekEndOffPeak(day)
             } else {
                 // weekday and off-peak season
-                this.populateScheduleWeekDayOffPeak()
+                this.populateScheduleWeekDayOffPeak(GS_2, Ferreira)
             }
         }
         this.calcSum ()
@@ -548,7 +548,7 @@ class InflowsProvider extends Component {
         this.updateSummary('Final Dam Level(%)', finalDamVolume)
         await this.setState({currentSchedule: generatedSchedule})
     }
-    populateScheduleWeekDayOffPeak = async () => {
+    populateScheduleWeekDayOffPeak = async (GS_2, Ferreira) => {
         const {
             PEAK,
             STANDARD,
@@ -563,7 +563,7 @@ class InflowsProvider extends Component {
             DAILY_LUPHOHLO_INFLOW,
             INITIAL_LUPHOHLO_DAM_VOLUME
         } = this.state.ezulwini
-        let generatedSchedule = this.state.utils.methods.ezulwiniShutDown(this.state.currentSchedule)
+        let generatedSchedule = this.state.utils.methods.allShutDown(this.state.currentSchedule)
         let waterConsumed = 0
 
         if (PEAK === 0 || PEAK > 0) {
@@ -593,15 +593,36 @@ class InflowsProvider extends Component {
 
         this.updateSummary('Water Used (mil. m³)', waterConsumed)
         this.updateSummary('Final Dam Level(%)', finalDamVolume)
+
+        // Edwaleni & Maguduza
+        const edwalwniSum = GS_2 + Ferreira
+        if(edwalwniSum > 8) {
+            generatedSchedule = this.state.utils.methods.edwaleniPeakFullLoad(generatedSchedule)
+            generatedSchedule = this.state.utils.methods.maguduzaPeakFullLoad(generatedSchedule)
+        }
+        if(edwalwniSum > 16) {
+            generatedSchedule = this.state.utils.methods.edwaleniStandardFullLoad(generatedSchedule)
+            generatedSchedule = this.state.utils.methods.maguduzaStandardFullLoad(generatedSchedule)
+        }
+        if(edwalwniSum > 21) {
+            generatedSchedule = this.state.utils.methods.edwaleniOffPeakFullLoad(generatedSchedule)
+            generatedSchedule = this.state.utils.methods.maguduzaOffPeakFullLoad(generatedSchedule)
+        }
         await this.setState({currentSchedule: generatedSchedule})
     }
     populateScheduleWeekDayPeakSeason = async (Luphohlo_Daily_Level) => {
         let generatedSchedule = this.state.utils.methods.ezulwiniShutDown(this.state.currentSchedule)
+        // ezulwini
         if (parseInt(Luphohlo_Daily_Level) > 1002) {
             generatedSchedule = this.state.utils.methods.ezulwiniPeakFullLoad(generatedSchedule)
             let waterConsumed = (this.state.ezulwini.PEAK / 1000000).toFixed(2)
             this.updateSummary('Water Used (mil. m³)', waterConsumed)
         }
+
+        // edwaleni
+        generatedSchedule = this.state.utils.methods.edwaleniPeakFullLoad(generatedSchedule)
+        generatedSchedule = this.state.utils.methods.maguduzaPeakFullLoad(generatedSchedule)
+
         await this.setState({currentSchedule: generatedSchedule})
 
     }
