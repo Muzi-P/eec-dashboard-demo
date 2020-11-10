@@ -775,21 +775,25 @@ class InflowsProvider extends Component {
     }
 
     /*updating models */
-    updateModel = (edit, current) => {
+    updateModel = (edit, current, name) => {
         let currentModel = current
         edit.forEach((item,index) => {
             currentModel[0].Min[index].y = item.min
             currentModel[0].Max[index].y = item.max
             currentModel[0].Opt[index].y = item.opt
         })
-        this.updateModelApi (currentModel)
+        currentModel[0].Model_Name = edit.Model_Name
+        this.updateModelApi (currentModel, name)
     }
-    updateModelApi = (model) => {
+    updateModelApi = (model, name) => {
         axios.patch( 
-            `${process.env.REACT_APP_API}/models/${model[0].Model_Name}`,
+            `${process.env.REACT_APP_API}/models/${name}`,
             model[0],
             this.state.config
-          ).then(this.getAllModels()).catch(res => console.log(res));
+          ).then((res) => {
+            this.alert('Model Updated', `Model Name: ${res.data.Model_Name}`)
+          })
+          .catch(error => console.log(error));
     }
 
     /*adding a new  model */

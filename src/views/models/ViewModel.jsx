@@ -5,8 +5,10 @@ import {
   Card,
   CardBody,
   CardHeader,
-  CardTitle,
   Button,
+  FormGroup,
+  Row,
+  Input,
   CardFooter,
   Col,
 } from "reactstrap";
@@ -26,22 +28,49 @@ export default class ViewModel extends Component {
       ],
       data: [],
       edit: [],
-      modal: false
+      modal: false,
+      canSave: false,
+      modelName: '',
+      model: {
+        Model_Name: '',
+        createdAt: '',
+        updatedAt: ''
+      }
     }
   }
   handleSaveModel = () => {
-    this.context.updateModel(this.state.data, this.props.currentModel)
+    let data = this.state.data
+    data.Model_Name = this.state.model.Model_Name
+    this.context.updateModel(data, this.props.currentModel,this.state.modelName)
+  }
+  static getDerivedStateFromProps(nextProps) {
+    return {
+      model: nextProps.currentModel[0],
+    };
   }
   componentDidUpdate(prevProps) {
     if (this.props.data !== prevProps.data) {
       this.setState({data: this.props.data})
+      const modelName = this.props.currentModel[0].Model_Name
+      this.setState({modelName})
     }
+  }
+  handleModelNAmeChange = (e) => {
+    // if (e.target.id === "Model_Name") {
+    //   let model = this.state.model
+    //   model.Model_Name = e.target.value
+    //   this.setState({model})
+    //   this.setState({canSave: true})
+    // }
   }
   openModal = () => {
     this.setState({modal: true})
   }
   handleClose = () => {
     this.setState({modal: false})
+  }
+  handleEditModel () {
+    this.setState({canSave: true})
   }
   deleteModel = () => {
     let modelName = this.props.currentModel[0].Model_Name
@@ -66,8 +95,7 @@ export default class ViewModel extends Component {
   }
 
   render() {
-    const {currentModel} = this.props
-    const {columns, data} = this.state
+    const {columns, data, model} = this.state
     return (
       <>
       <Col md="12">
@@ -75,9 +103,39 @@ export default class ViewModel extends Component {
                 <CardHeader>
                     {data.length !== 0  && 
                       <>
-                        <CardTitle tag="h5">Name: {currentModel[0].Model_Name}</CardTitle> 
-                        <CardTitle tag="h5">Created At: {currentModel[0].createdAt.split('T')[0]} </CardTitle>
-                        <CardTitle tag="h5">Updated At: {currentModel[0].updatedAt.split('T')[0]} </CardTitle> 
+                          <Row>
+                            <Col className="pr-md-1" md="6">
+                              <FormGroup>
+                                <label>Model Name</label>
+                                <Input
+                                  onChange={this.handleModelNAmeChange}
+                                  value={model.Model_Name}
+                                  id="Model_Name"
+                                  type="text"
+                                />
+                              </FormGroup>
+                            </Col>
+                            <Col className="pr-md-1" md="6">
+                              <FormGroup>
+                                <label>Created At</label>
+                                <Input
+                                  value={model.createdAt.split('T')[0]}
+                                  type="text"
+                                  onChange={this.handleModelNAmeChange}
+                                />
+                              </FormGroup>
+                            </Col>
+                            <Col className="pr-md-1" md="6">
+                              <FormGroup>
+                                <label>Updated At</label>
+                                <Input
+                                  value={model.updatedAt.split('T')[0]}
+                                  onChange={this.handleModelNAmeChange}
+                                  type="text"
+                                />
+                              </FormGroup>
+                            </Col>
+                          </Row>
                       </>
                     }
                   </CardHeader>
@@ -101,7 +159,7 @@ export default class ViewModel extends Component {
                                   data[data.indexOf(oldData)] = newData;
                                   return { ...prevState, data };
                                 });
-                                this.handleSaveModel()
+                                this.handleEditModel()
                               }
                             }, 600);
                           })
@@ -109,6 +167,9 @@ export default class ViewModel extends Component {
                     />
                   </CardBody>
                   <CardFooter>
+                  <Button className="btn-fill" color="success" onClick={this.handleSaveModel} disabled={!this.state.canSave}>
+                    Save Model
+                  </Button> 
                   <Button className="btn-fill" color="danger" onClick={this.deleteModel} disabled={this.props.disable}>
                     Delete Model
                   </Button> 

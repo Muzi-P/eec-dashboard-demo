@@ -172,7 +172,7 @@ class GenerateSchedule extends Component {
                 <CardBody>
                   <Form>
                     <Row>
-                      <Col className="pr-md-1" md="4">
+                      <Col className="pr-md-1 calender" md="4">
                         <FormGroup>
                           <label htmlFor="exampleInputEmail1">
                             Select Date:
