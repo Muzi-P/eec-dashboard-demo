@@ -751,6 +751,7 @@ class InflowsProvider extends Component {
         }).then(() => {
             this.getAllInflows()
             this.getAllPowerStations()
+            this.getAllModels()
         });
       }
     /********Drainage model*****/
@@ -783,6 +784,7 @@ class InflowsProvider extends Component {
             currentModel[0].Opt[index].y = item.opt
         })
         currentModel[0].Model_Name = edit.Model_Name
+        delete currentModel[0].__v
         this.updateModelApi (currentModel, name)
     }
     updateModelApi = (model, name) => {
@@ -812,7 +814,7 @@ class InflowsProvider extends Component {
         delete newModel._id
         delete newModel.createdAt
         delete newModel.updatedAt
-        delete newModel._v
+        delete newModel.__v
         this.newModelApi(newModel)
     }
     newModelApi = (model) => {
