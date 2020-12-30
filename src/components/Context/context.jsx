@@ -333,12 +333,16 @@ class InflowsProvider extends Component {
 
     return data;
   };
-  populateDataPoints = () => {
+  populateDataPoints = (view = false) => {
     let data = this.populateModelDataPoints();
+
     let reviewYearsDataPoints = this.state.reviewYears.map((year) => {
       let singleYearDataPoint = this.singleYearDataPoint(year);
       return singleYearDataPoint;
     });
+    if (view) {
+      reviewYearsDataPoints = [];
+    }
     if (reviewYearsDataPoints.length === 0) {
       return data;
     } else {

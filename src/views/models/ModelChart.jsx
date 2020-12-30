@@ -21,7 +21,7 @@ export default class PreviousInflows extends Component {
             </CardHeader>
             <CardBody>
               <ViewModelChart
-                data={this.context.populateDataPoints()}
+                data={this.context.populateDataPoints(true)}
                 dataPoints={this.context.getData()}
                 defaultModel={this.context.getDefaultModel()}
                 reviewYear={this.context.reviewYear}
