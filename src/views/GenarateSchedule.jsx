@@ -1,15 +1,12 @@
-
-import React, { Component } from 'react'
-import { InflowsContext } from "../components/Context/context"
+import React, { Component } from "react";
+import { InflowsContext } from "../components/Context/context";
 // import DatePicker from "react-datepicker";
-import {
-  KeyboardDatePicker
-} from '@material-ui/pickers';
- 
+import { KeyboardDatePicker } from "@material-ui/pickers";
+
 import "react-datepicker/dist/react-datepicker.css";
-import PreviousInflows from './PreviousInflows';
-import DailySummary from './Summary';
-import WeekDayGenSchedule from './schedules/WeekDayGenSchedule'
+import PreviousInflows from "./PreviousInflows";
+import DailySummary from "./Summary";
+import WeekDayGenSchedule from "./schedules/WeekDayGenSchedule";
 // reactstrap components
 import {
   Button,
@@ -21,144 +18,152 @@ import {
   Form,
   Input,
   Row,
-  Col
+  Col,
 } from "reactstrap";
 class GenerateSchedule extends Component {
-  static contextType = InflowsContext
+  static contextType = InflowsContext;
   constructor(props) {
-    super(props)
-    this.state= {
+    super(props);
+    this.state = {
       value: new Date().toISOString(),
       startDate: new Date(),
-      placeholder: 'dangerouslySetInnerHTML={hello}', 
-      Mkinkomo_Reservoir_Daily_Level: '',
-      Luphohlo_Daily_Level: '',
-      Ferreira: '',
-      GS_15: '',
-      GS_2: '',
+      placeholder: "dangerouslySetInnerHTML={hello}",
+      Mkinkomo_Reservoir_Daily_Level: "",
+      Luphohlo_Daily_Level: "",
+      Ferreira: "",
+      GS_15: "",
+      GS_2: "",
       valid: true,
       disabled: true,
-      model: '',
+      model: "",
       selectedDate: new Date(),
-      validFields: ['Mkinkomo_Reservoir_Daily_Level', 'Luphohlo_Daily_Level', 'Ferreira', 'GS_15', 'GS_2']
-    }
+      validFields: [
+        "Mkinkomo_Reservoir_Daily_Level",
+        "Luphohlo_Daily_Level",
+        "Ferreira",
+        "GS_15",
+        "GS_2",
+      ],
+    };
   }
-  
+
   handleChange = async (date) => {
     await this.setState({
-      startDate: date
-    })
-    this.context.handleForecastDateChange(this.state.startDate)
-  }
+      startDate: date,
+    });
+    this.context.handleForecastDateChange(this.state.startDate);
+  };
 
   componentDidMount = () => {
-    this.context.handleForecastDateChange(this.state.startDate)
-  }
-  
+    this.context.handleForecastDateChange(this.state.startDate);
+  };
+
   handleInputChange = async (e) => {
     await this.setState({
-      [e.target.id] : e.target.value
-    })
-    const disabled = this.isValid()
-    this.setState({disabled})
-  }
+      [e.target.id]: e.target.value,
+    });
+    const disabled = this.isValid();
+    this.setState({ disabled });
+  };
   isValid = () => {
-    let valid = false
-    this.state.validFields.forEach(item => {
-    if (this.state[item] === "") {
-        valid = true
+    let valid = false;
+    this.state.validFields.forEach((item) => {
+      if (this.state[item] === "") {
+        valid = true;
       }
-    })
-    return valid
-  }
+    });
+    return valid;
+  };
 
   handleGenerateSchedule = () => {
-    if (this.state.model === '') {
-      this.setState({model: this.context.modelNames[0]}, this.generateSchedule)
+    if (this.state.model === "") {
+      this.setState(
+        { model: this.context.modelNames[0] },
+        this.generateSchedule
+      );
     } else {
-      this.generateSchedule()
+      this.generateSchedule();
     }
-  }
+  };
   generateSchedule = () => {
-    this.context.generateSchedule(this.state)
-  }
+    this.context.generateSchedule(this.state);
+  };
   mkinkomoOnfocusOut = (e) => {
-    let currentValue = e.target.value
-    if (currentValue === '') {
-      return
+    let currentValue = e.target.value;
+    if (currentValue === "") {
+      return;
     } else {
-      currentValue = parseFloat(currentValue)
+      currentValue = parseFloat(currentValue);
       if (currentValue <= 5) {
-        currentValue = 589.5 + currentValue
+        currentValue = 589.5 + currentValue;
         this.setState({
-          [e.target.id] : currentValue
-        })
+          [e.target.id]: currentValue,
+        });
       }
     }
-  }
+  };
   luphohloOnfocusOut = (e) => {
-    let currentValue = e.target.value
-    if (currentValue === '') {
-      return
+    let currentValue = e.target.value;
+    if (currentValue === "") {
+      return;
     } else {
-      currentValue = parseFloat(currentValue)
+      currentValue = parseFloat(currentValue);
       if (currentValue <= 20) {
-        currentValue = 1015.6 + currentValue
+        currentValue = 1015.6 + currentValue;
         this.setState({
-          [e.target.id] : currentValue
-        })
+          [e.target.id]: currentValue,
+        });
       }
     }
-  }
+  };
   gsOnfocusOut = (e) => {
-    let currentValue = e.target.value
-    if (currentValue.includes('.')) {
-      const split = currentValue.split('.')
-      if (split[0] === '') {
-        currentValue = `0.${split[1]}`
+    let currentValue = e.target.value;
+    if (currentValue.includes(".")) {
+      const split = currentValue.split(".");
+      if (split[0] === "") {
+        currentValue = `0.${split[1]}`;
         this.setState({
-          [e.target.id] : currentValue
-        })
+          [e.target.id]: currentValue,
+        });
       }
     }
-  }
+  };
   loadPreviousInflows = async (e) => {
-    const {inflows} = this.context
-    var lastInflow = inflows.slice(-1)[0]
+    const { inflows } = this.context;
+    var lastInflow = inflows.slice(-1)[0];
     const {
       Mkinkomo_Reservoir_Daily_Level,
       Luphohlo_Daily_Level,
       Ferreira,
       GS_15,
       GS_2,
-      Day_of_Input
-    } = lastInflow
+      Day_of_Input,
+    } = lastInflow;
     await this.setState({
-      Mkinkomo_Reservoir_Daily_Level
-    })
+      Mkinkomo_Reservoir_Daily_Level,
+    });
     await this.setState({
-      Luphohlo_Daily_Level
-    })
+      Luphohlo_Daily_Level,
+    });
     await this.setState({
-      Ferreira
-    })
+      Ferreira,
+    });
     await this.setState({
-      GS_15
-    })
+      GS_15,
+    });
     await this.setState({
-      GS_2
-    })
+      GS_2,
+    });
     await this.setState({
-      startDate: new Date (Day_of_Input)
-    })
-    const disabled = this.isValid()
-    this.setState({disabled})
-    this.context.handleForecastDateChange(this.state.startDate)
-
-  }
+      startDate: new Date(Day_of_Input),
+    });
+    const disabled = this.isValid();
+    this.setState({ disabled });
+    this.context.handleForecastDateChange(this.state.startDate);
+  };
   render() {
-    const {date} = this.context
-    const {disabled} = this.state
+    const { date } = this.context;
+    const { disabled } = this.state;
     return (
       <>
         <div className="content">
@@ -185,7 +190,7 @@ class GenerateSchedule extends Component {
                             views={["year", "month", "date"]}
                             value={this.state.startDate}
                             InputAdornmentProps={{ position: "start" }}
-                            onChange={date => this.handleChange(date)}
+                            onChange={(date) => this.handleChange(date)}
                           />
                         </FormGroup>
                       </Col>
@@ -194,10 +199,15 @@ class GenerateSchedule extends Component {
                           <label htmlFor="exampleInputEmail1">
                             Select Model:
                           </label>
-                          <Input type="select" name="select" id="model" onChange={this.handleInputChange}>
+                          <Input
+                            type="select"
+                            name="select"
+                            id="model"
+                            onChange={this.handleInputChange}
+                          >
                             {this.context.modelNames.map((model, index) => {
-                                  return <option key={index}>{model}</option>
-                              })}
+                              return <option key={index}>{model}</option>;
+                            })}
                           </Input>
                         </FormGroup>
                       </Col>
@@ -279,19 +289,30 @@ class GenerateSchedule extends Component {
                   </Form>
                 </CardBody>
                 <CardFooter>
-                  <Button className="btn-fill" disabled={disabled} color="primary" type="submit" onClick={this.handleGenerateSchedule}>
+                  <Button
+                    className="btn-fill"
+                    disabled={disabled}
+                    color="primary"
+                    type="submit"
+                    onClick={this.handleGenerateSchedule}
+                  >
                     Generate Schedule
                   </Button>
-                  <Button className="btn-fill"  color="info" type="submit" onClick={this.loadPreviousInflows}>
+                  <Button
+                    className="btn-fill"
+                    color="info"
+                    type="submit"
+                    onClick={this.loadPreviousInflows}
+                  >
                     Load Previous Inflows
                   </Button>
                 </CardFooter>
               </Card>
             </Col>
-           <PreviousInflows/>
+            <PreviousInflows />
           </Row>
           <Row>
-            <WeekDayGenSchedule date = {this.state.startDate} />
+            <WeekDayGenSchedule date={this.state.startDate} />
             <DailySummary />
           </Row>
         </div>

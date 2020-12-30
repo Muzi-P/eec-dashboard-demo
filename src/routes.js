@@ -12,7 +12,7 @@ var routes = [
     rtlName: "لوحة القيادة",
     icon: "tim-icons icon-chart-pie-36",
     component: Dashboard,
-    layout: "/admin"
+    layout: "/admin",
   },
   {
     path: "/genarate-schedule",
@@ -20,7 +20,7 @@ var routes = [
     rtlName: "ملف تعريفي للمستخدم",
     icon: "tim-icons icon-notes",
     component: GenerateSchedule,
-    layout: "/admin"
+    layout: "/admin",
   },
   {
     path: "/notifications",
@@ -28,7 +28,7 @@ var routes = [
     rtlName: "إخطارات",
     icon: "tim-icons icon-bell-55",
     component: Notifications,
-    layout: "/admin"
+    layout: "/admin",
   },
   {
     path: "/user-profile",
@@ -36,7 +36,7 @@ var routes = [
     rtlName: "ملف تعريفي للمستخدم",
     icon: "tim-icons icon-single-02",
     component: UserProfile,
-    layout: "/admin"
+    layout: "/admin",
   },
   {
     path: "/drainage-models",
@@ -44,7 +44,7 @@ var routes = [
     rtlName: "ملف تعريفي للمستخدم",
     icon: "tim-icons icon-calendar-60",
     component: DrainageModels,
-    layout: "/admin"
+    layout: "/admin",
   },
   {
     path: "/settings",
@@ -52,7 +52,7 @@ var routes = [
     rtlName: "ملف تعريفي للمستخدم",
     icon: "tim-icons icon-settings-gear-63",
     component: Settings,
-    layout: "/admin"
+    layout: "/admin",
   },
 ];
 export default routes;

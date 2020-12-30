@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import { InflowsContext } from "../../components/Context/context"
+import React, { Component } from "react";
+import { InflowsContext } from "../../components/Context/context";
 // reactstrap components
 import {
   Button,
@@ -11,33 +11,33 @@ import {
   Form,
   Input,
   Row,
-  Col
+  Col,
 } from "reactstrap";
 
 export class Ezulwini extends Component {
-  static contextType = InflowsContext
+  static contextType = InflowsContext;
   constructor(props) {
-    super()
+    super();
     this.state = {
       ezulwiniPS: {
-        Name: 'Edwaleni Power Station',
-        Rated_Head: '262',
-        Total_Power_Output: '15',
+        Name: "Edwaleni Power Station",
+        Rated_Head: "262",
+        Total_Power_Output: "15",
         Genarators: [
           {
-            Rated_Power: '2.5',
-            Rated_Flow: '0.240',
-            Units: '4'
+            Rated_Power: "2.5",
+            Rated_Flow: "0.240",
+            Units: "4",
           },
           {
-            Rated_Power: '5',
-            Rated_Flow: '0.470',
-            Units: '1'
-          }
-        ]
+            Rated_Power: "5",
+            Rated_Flow: "0.470",
+            Units: "1",
+          },
+        ],
       },
-      disabled: true
-    }
+      disabled: true,
+    };
   }
   static getDerivedStateFromProps(nextProps) {
     return {
@@ -45,19 +45,19 @@ export class Ezulwini extends Component {
     };
   }
   handleEzuwliniInputChange = (e) => {
-    if (e.target.id === "Rated_Flow" ) {
-      this.setState({disabled: false})
-      let ezulwiniPS = this.state.ezulwiniPS
-      ezulwiniPS.Genarators[0].Rated_Flow = e.target.value
-      this.setState({ezulwiniPS})
+    if (e.target.id === "Rated_Flow") {
+      this.setState({ disabled: false });
+      let ezulwiniPS = this.state.ezulwiniPS;
+      ezulwiniPS.Genarators[0].Rated_Flow = e.target.value;
+      this.setState({ ezulwiniPS });
     }
-  }
+  };
   handleRatedFlowChange = () => {
-    this.context.editRatedFlow(this.state.ezulwiniPS)
-    this.setState({disabled: true})
-  }
+    this.context.editRatedFlow(this.state.ezulwiniPS);
+    this.setState({ disabled: true });
+  };
   render() {
-    const {ezulwiniPS, disabled} = this.state
+    const { ezulwiniPS, disabled } = this.state;
     return (
       <Col md="6">
         <Card>
@@ -119,11 +119,11 @@ export class Ezulwini extends Component {
                 <Col className="pl-md-1" md="4">
                   <FormGroup>
                     <label>Rated Flow (m³/s/MW)</label>
-                    <Input 
-                        onChange={this.handleEzuwliniInputChange}
-                        value={ezulwiniPS.Genarators[0].Rated_Flow}
-                        id="Rated_Flow"
-                        type="number"
+                    <Input
+                      onChange={this.handleEzuwliniInputChange}
+                      value={ezulwiniPS.Genarators[0].Rated_Flow}
+                      id="Rated_Flow"
+                      type="number"
                     />
                   </FormGroup>
                 </Col>
@@ -131,14 +131,20 @@ export class Ezulwini extends Component {
             </Form>
           </CardBody>
           <CardFooter>
-            <Button className="btn-fill" color="primary" type="submit" onClick={this.handleRatedFlowChange} disabled={disabled}>
+            <Button
+              className="btn-fill"
+              color="primary"
+              type="submit"
+              onClick={this.handleRatedFlowChange}
+              disabled={disabled}
+            >
               Save
             </Button>
           </CardFooter>
         </Card>
       </Col>
-    )
+    );
   }
 }
 
-export default Ezulwini
+export default Ezulwini;

@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import Cookies from 'js-cookie'
-import MultiSeriesAreaChart from "../components/Graphs/MuLtiSeriesAreaChart"
-import MuLtiSeriesAreaChartGS15Wrapper from "../components/Graphs/MuLtiSeriesAreaChartGS_15Wrapper"
-import { InflowsContext } from "../components/Context/context"
+import Cookies from "js-cookie";
+import MultiSeriesAreaChart from "../components/Graphs/MuLtiSeriesAreaChart";
+import MuLtiSeriesAreaChartGS15Wrapper from "../components/Graphs/MuLtiSeriesAreaChartGS_15Wrapper";
+import { InflowsContext } from "../components/Context/context";
 import {
   Card,
   CardHeader,
@@ -18,52 +18,69 @@ import {
 } from "reactstrap";
 
 class Dashboard extends Component {
-  static contextType = InflowsContext
+  static contextType = InflowsContext;
   constructor(props) {
     super(props);
     this.state = {
       bigChartData: "data1",
       inflows: [],
-      data: []
+      data: [],
     };
   }
 
   componentDidMount = () => {
-    const loggedIn = Cookies.get('loggeIn')
-    if (loggedIn) this.context.keepLoggedIn()
-  }
+    const loggedIn = Cookies.get("loggeIn");
+    if (loggedIn) this.context.keepLoggedIn();
+  };
   handleClick = (e, year) => {
     e.preventDefault();
     this.context.changeForecastYear(year);
-  }
+  };
 
   handleChange = (e) => {
-    this.setState({ checkboxChecked: e.target.checked })
+    this.setState({ checkboxChecked: e.target.checked });
     this.context.handleReviewYear(e.target.value);
-  }
+  };
   handleModelChange = (e) => {
     this.context.handleReviewModel(e.target.value);
-  }
-  setBgChartData = name => {
+  };
+  setBgChartData = (name) => {
     this.setState({
-      bigChartData: name
+      bigChartData: name,
     });
   };
   render() {
-    const { reviewYears, reviewModels } = this.context
+    const { reviewYears, reviewModels } = this.context;
     let yearInfocus = this.context.years.map((year, key) => {
-      return <InputGroupText className="reveiwYear" key={year}>
-        <Input addon type="checkbox" aria-label="Checkbox for following text input" onChange={e => this.handleChange(e)} value={year} key={year} />
-        {year}
-      </InputGroupText>
-    })
-    let modelInfocus = this.context.modelNames.map(model => {
-      return <InputGroupText className="reveiwYear" key={model}>
-        <Input addon type="checkbox" aria-label="Checkbox for following text input" onChange={e => this.handleModelChange(e)} value={model} key={model} />
-        {model}
-      </InputGroupText>
-    })
-
+      return (
+        <InputGroupText className="reveiwYear" key={year}>
+          <Input
+            addon
+            type="checkbox"
+            aria-label="Checkbox for following text input"
+            onChange={(e) => this.handleChange(e)}
+            value={year}
+            key={year}
+          />
+          {year}
+        </InputGroupText>
+      );
+    });
+    let modelInfocus = this.context.modelNames.map((model) => {
+      return (
+        <InputGroupText className="reveiwYear" key={model}>
+          <Input
+            addon
+            type="checkbox"
+            aria-label="Checkbox for following text input"
+            onChange={(e) => this.handleModelChange(e)}
+            value={model}
+            key={model}
+          />
+          {model}
+        </InputGroupText>
+      );
+    });
 
     return (
       <>
@@ -75,17 +92,27 @@ class Dashboard extends Component {
                   <Row>
                     <Col className="text-left" sm="6">
                       <div>
-                      {<h5 className="card-category">Review Year: {reviewYears.toString()}</h5>}
+                        {
+                          <h5 className="card-category">
+                            Review Year: {reviewYears.toString()}
+                          </h5>
+                        }
                       </div>
                       <div>
-                      {<h5 className="card-category">Model: {reviewModels.toString()}</h5>}
+                        {
+                          <h5 className="card-category">
+                            Model: {reviewModels.toString()}
+                          </h5>
+                        }
                       </div>
                       <CardTitle tag="h2">Luphohlo Drainage Model</CardTitle>
                     </Col>
-                    
+
                     <Col>
-                    <UncontrolledDropdown>
-                      <div className="modelSwitch"><h4>Select Model :</h4></div>
+                      <UncontrolledDropdown>
+                        <div className="modelSwitch">
+                          <h4>Select Model :</h4>
+                        </div>
                         <DropdownToggle
                           caret
                           className="btn-icon"
@@ -95,14 +122,22 @@ class Dashboard extends Component {
                         >
                           <i className="tim-icons icon-settings-gear-63" />
                         </DropdownToggle>
-                        <DropdownMenu aria-labelledby="dropdownMenuLink" right persist overflow="auto" className="reviewModelMenu">
+                        <DropdownMenu
+                          aria-labelledby="dropdownMenuLink"
+                          right
+                          persist
+                          overflow="auto"
+                          className="reviewModelMenu"
+                        >
                           {modelInfocus}
                         </DropdownMenu>
                       </UncontrolledDropdown>
                     </Col>
                     <Col>
                       <UncontrolledDropdown>
-                      <div className="modelSwitch"><h4>Select Year :</h4></div>
+                        <div className="modelSwitch">
+                          <h4>Select Year :</h4>
+                        </div>
                         <DropdownToggle
                           caret
                           className="btn-icon"
@@ -112,7 +147,13 @@ class Dashboard extends Component {
                         >
                           <i className="tim-icons icon-settings-gear-63" />
                         </DropdownToggle>
-                        <DropdownMenu aria-labelledby="dropdownMenuLink" right persist overflow="auto" className="reviewYearMenu">
+                        <DropdownMenu
+                          aria-labelledby="dropdownMenuLink"
+                          right
+                          persist
+                          overflow="auto"
+                          className="reviewYearMenu"
+                        >
                           {yearInfocus}
                         </DropdownMenu>
                       </UncontrolledDropdown>
@@ -120,7 +161,12 @@ class Dashboard extends Component {
                   </Row>
                 </CardHeader>
                 <CardBody>
-                  <MultiSeriesAreaChart data={this.context.populateDataPoints()} dataPoints={this.context.getData()} defaultModel={this.context.getDefaultModel()} reviewYear={this.context.reviewYear} />
+                  <MultiSeriesAreaChart
+                    data={this.context.populateDataPoints()}
+                    dataPoints={this.context.getData()}
+                    defaultModel={this.context.getDefaultModel()}
+                    reviewYear={this.context.reviewYear}
+                  />
                 </CardBody>
               </Card>
             </Col>

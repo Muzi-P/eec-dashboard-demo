@@ -12,17 +12,16 @@ import {
   Form,
   Input,
   Row,
-  Col
+  Col,
 } from "reactstrap";
-import { InflowsContext } from "../components/Context/context"
-
+import { InflowsContext } from "../components/Context/context";
 
 class UserProfile extends React.Component {
-  static contextType = InflowsContext
-  handleInputChange () {}
+  static contextType = InflowsContext;
+  handleInputChange() {}
   render() {
-    const {user} = this.context
-    console.log(user)
+    const { user } = this.context;
+    console.log(user);
     return (
       <>
         <div className="content">
@@ -62,8 +61,9 @@ class UserProfile extends React.Component {
                           <label htmlFor="exampleInputEmail1">
                             Email address
                           </label>
-                          <Input 
-                            placeholder="mike@email.com" type="email" 
+                          <Input
+                            placeholder="mike@email.com"
+                            type="email"
                             value={user.email}
                             onChange={this.handleInputChange}
                           />
@@ -78,7 +78,7 @@ class UserProfile extends React.Component {
                             placeholder="Company"
                             type="text"
                             onChange={this.handleInputChange}
-                            value={user.name.split(' ')[0]}
+                            value={user.name.split(" ")[0]}
                           />
                         </FormGroup>
                       </Col>
@@ -89,7 +89,7 @@ class UserProfile extends React.Component {
                             placeholder="Last Name"
                             type="text"
                             onChange={this.handleInputChange}
-                            value={user.name.split(' ')[1]}
+                            value={user.name.split(" ")[1]}
                           />
                         </FormGroup>
                       </Col>
@@ -152,7 +152,7 @@ class UserProfile extends React.Component {
                     <div className="block block-two" />
                     <div className="block block-three" />
                     <div className="block block-four" />
-                    <a href="#pablo" onClick={e => e.preventDefault()}>
+                    <a href="#pablo" onClick={(e) => e.preventDefault()}>
                       <img
                         alt="..."
                         className="avatar"

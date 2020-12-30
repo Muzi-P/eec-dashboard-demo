@@ -18,7 +18,7 @@
 import React from "react";
 // nodejs library that concatenates classes
 import classNames from "classnames";
-import { InflowsContext } from "../Context/context"
+import { InflowsContext } from "../Context/context";
 
 // reactstrap components
 import {
@@ -35,17 +35,17 @@ import {
   NavLink,
   Nav,
   Container,
-  Modal
+  Modal,
 } from "reactstrap";
 
 class AdminNavbar extends React.Component {
-  static contextType = InflowsContext
+  static contextType = InflowsContext;
   constructor(props) {
     super(props);
     this.state = {
       collapseOpen: false,
       modalSearch: false,
-      color: "navbar-transparent"
+      color: "navbar-transparent",
     };
   }
   componentDidMount() {
@@ -58,11 +58,11 @@ class AdminNavbar extends React.Component {
   updateColor = () => {
     if (window.innerWidth < 993 && this.state.collapseOpen) {
       this.setState({
-        color: "bg-white"
+        color: "bg-white",
       });
     } else {
       this.setState({
-        color: "navbar-transparent"
+        color: "navbar-transparent",
       });
     }
   };
@@ -70,27 +70,27 @@ class AdminNavbar extends React.Component {
   toggleCollapse = () => {
     if (this.state.collapseOpen) {
       this.setState({
-        color: "navbar-transparent"
+        color: "navbar-transparent",
       });
     } else {
       this.setState({
-        color: "bg-white"
+        color: "bg-white",
       });
     }
     this.setState({
-      collapseOpen: !this.state.collapseOpen
+      collapseOpen: !this.state.collapseOpen,
     });
   };
   // this function is to open the Search modal
   toggleModalSearch = () => {
     this.setState({
-      modalSearch: !this.state.modalSearch
+      modalSearch: !this.state.modalSearch,
     });
   };
   // this function handles logout
   logOut = () => {
-    this.context.logOut()
-  }
+    this.context.logOut();
+  };
   render() {
     return (
       <>
@@ -102,7 +102,7 @@ class AdminNavbar extends React.Component {
             <div className="navbar-wrapper">
               <div
                 className={classNames("navbar-toggle d-inline", {
-                  toggled: this.props.sidebarOpened
+                  toggled: this.props.sidebarOpened,
                 })}
               >
                 <button
@@ -115,7 +115,7 @@ class AdminNavbar extends React.Component {
                   <span className="navbar-toggler-bar bar3" />
                 </button>
               </div>
-              <NavbarBrand href="#pablo" onClick={e => e.preventDefault()}>
+              <NavbarBrand href="#pablo" onClick={(e) => e.preventDefault()}>
                 {this.props.brandText}
               </NavbarBrand>
             </div>
@@ -192,10 +192,13 @@ class AdminNavbar extends React.Component {
                     color="default"
                     data-toggle="dropdown"
                     nav
-                    onClick={e => e.preventDefault()}
+                    onClick={(e) => e.preventDefault()}
                   >
                     <div className="photo">
-                      <img alt="..." src={require("../../assets/img/anime3.png")} />
+                      <img
+                        alt="..."
+                        src={require("../../assets/img/anime3.png")}
+                      />
                     </div>
                     <b className="caret d-none d-lg-block d-xl-block" />
                     <p className="d-lg-none">Log out</p>
@@ -212,7 +215,9 @@ class AdminNavbar extends React.Component {
                     </NavLink>
                     <DropdownItem divider tag="li" />
                     <NavLink tag="li">
-                      <DropdownItem onClick={this.logOut} className="nav-item">Log out</DropdownItem>
+                      <DropdownItem onClick={this.logOut} className="nav-item">
+                        Log out
+                      </DropdownItem>
                     </NavLink>
                   </DropdownMenu>
                 </UncontrolledDropdown>

@@ -24,7 +24,7 @@ class FixedPlugin extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      classes: "dropdown show-dropdown"
+      classes: "dropdown show-dropdown",
     };
   }
   handleClick = () => {
@@ -36,8 +36,8 @@ class FixedPlugin extends Component {
   };
   handleMouseLeave = () => {
     this.setState({ classes: "dropdown show-dropdown" });
-  }
-  activateMode = mode => {
+  };
+  activateMode = (mode) => {
     switch (mode) {
       case "light":
         document.body.classList.add("white-content");
@@ -50,11 +50,14 @@ class FixedPlugin extends Component {
   render() {
     return (
       <div className="fixed-plugin">
-        <div className={this.state.classes} >
-          <div onClick={this.handleClick} >
+        <div className={this.state.classes}>
+          <div onClick={this.handleClick}>
             <i className="fa fa-cog fa-2x" />
           </div>
-          <ul className="dropdown-menu show" onMouseLeave = {this.handleMouseLeave}>
+          <ul
+            className="dropdown-menu show"
+            onMouseLeave={this.handleMouseLeave}
+          >
             <li className="header-title">SIDEBAR BACKGROUND</li>
             <li className="adjustments-line">
               <div className="badge-colors text-center">
