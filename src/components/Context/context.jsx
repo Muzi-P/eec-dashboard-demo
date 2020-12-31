@@ -21,6 +21,7 @@ class InflowsProvider extends Component {
       reviewYears: [],
       powerStations: [],
       reviewModels: [],
+      loading: true,
       utils: functions,
       selectedModel: [],
       currentModel: [],
@@ -150,6 +151,7 @@ class InflowsProvider extends Component {
           break;
       }
     });
+    this.setState({ loading: false });
   };
   getAllModels = () => {
     axios

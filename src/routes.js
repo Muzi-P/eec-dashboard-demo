@@ -3,6 +3,7 @@ import Notifications from "./views/Notifications.jsx";
 import UserProfile from "./views/UserProfile.jsx";
 import Settings from "./views/Settings.jsx";
 import GenerateSchedule from "./views/GenarateSchedule";
+import Schedules from "./views/Schedules";
 import DrainageModels from "./views/DrainageModel";
 
 var routes = [
@@ -52,6 +53,14 @@ var routes = [
     rtlName: "ملف تعريفي للمستخدم",
     icon: "tim-icons icon-settings-gear-63",
     component: Settings,
+    layout: "/admin",
+  },
+  {
+    path: "/schedules",
+    name: "Schedules",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: "tim-icons icon-notes",
+    component: Schedules,
     layout: "/admin",
   },
 ];
