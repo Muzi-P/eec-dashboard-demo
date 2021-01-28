@@ -36,6 +36,9 @@ export default class WeekDayGenSchedule extends Component {
     date = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} `;
     this.setState({ date });
   };
+  handleSaveModel = () => {
+    console.log(this.context.currentSchedule);
+  };
 
   render() {
     const { currentSchedule } = this.context;
@@ -70,7 +73,7 @@ export default class WeekDayGenSchedule extends Component {
                           });
                           this.handleSaveModel();
                         }
-                      }, 600);
+                      }, 100);
                     }),
                 }}
               />
