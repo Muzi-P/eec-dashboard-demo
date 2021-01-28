@@ -30,7 +30,9 @@ class Dashboard extends Component {
 
   componentDidMount = () => {
     const loggedIn = Cookies.get("loggeIn");
-    if (loggedIn) this.context.keepLoggedIn();
+    if (loggedIn) {
+      this.context.keepLoggedIn();
+    }
   };
   handleClick = (e, year) => {
     e.preventDefault();

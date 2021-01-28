@@ -98,7 +98,7 @@
 @import "black-dashboard-react/custom/cards/card-user";
 @import "black-dashboard-react/custom/cards/card-task";
 @import "black-dashboard-react/custom/cards/card-plain";
-@import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
+@import url("https://fonts.googleapis.com/css?family=Montserrat:400,800");
 
 // Drainange Model
 .reveiwYear {
@@ -121,9 +121,8 @@
   top: 80px;
 }
 
-
 .calender input {
-	color: rgba(255, 255, 255, 0.8) !important;
+  color: rgba(255, 255, 255, 0.8) !important;
   height: 3px !important;
 }
 .MuiTextField-root {
@@ -131,80 +130,79 @@
 }
 
 * {
-	box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 .login-body {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	flex-direction: column;
-	font-family: 'Montserrat', sans-serif;
-	height: 100vh;
-	margin: -20px 0 50px 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-family: "Montserrat", sans-serif;
+  height: 100vh;
+  margin: -20px 0 50px 100px;
 }
 
 .login-body h1 {
-	font-weight: bold;
-	margin: 0;
+  font-weight: bold;
+  margin: 0;
 }
 
 .login-body h2 {
-	text-align: center;
+  text-align: center;
 }
 
 .login-body p {
-	font-size: 14px;
-	font-weight: 100;
-	line-height: 20px;
-	letter-spacing: 0.5px;
-	margin: 20px 0 30px;
+  font-size: 14px;
+  font-weight: 100;
+  line-height: 20px;
+  letter-spacing: 0.5px;
+  margin: 20px 0 30px;
 }
 
 .login-body span {
-	font-size: 12px;
+  font-size: 12px;
 }
 
 .login-body a {
-	color: #333;
-	font-size: 14px;
-	text-decoration: none;
-	margin: 15px 0;
+  color: #333;
+  font-size: 14px;
+  text-decoration: none;
+  margin: 15px 0;
 }
 
 button {
-	border-radius: 20px;
-	border: 1px solid #e14eca;
-	background-color: #e14eca;
-	color: #FFFFFF;
-	font-size: 12px;
-	font-weight: bold;
-	padding: 12px 45px;
-	letter-spacing: 1px;
-	text-transform: uppercase;
-	transition: transform 80ms ease-in;
+  border-radius: 20px;
+  border: 1px solid #e14eca;
+  background-color: #e14eca;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 12px 45px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: transform 80ms ease-in;
 }
 button:active {
-	transform: scale(0.95);
+  transform: scale(0.95);
 }
 
 button:focus {
-	outline: none;
+  outline: none;
 }
 
 button.ghost {
-	background-color: transparent;
+  background-color: transparent;
   background-color: #e14eca;
 }
 .container {
-	border-radius: 10px;
-  	box-shadow: 0 14px 28px rgba(0,0,0,0.25), 
-			0 10px 10px rgba(0,0,0,0.22);
-	position: relative;
-	overflow: hidden;
-	width: 768px;
-	max-width: 100%;
-	min-height: 480px;
+  border-radius: 10px;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  position: relative;
+  overflow: hidden;
+  width: 768px;
+  max-width: 100%;
+  min-height: 480px;
 }
 .form-container form {
   display: flex;
@@ -246,62 +244,62 @@ button.ghost {
   transition: all 0.6s ease-in-out;
 }
 .sign-up-container {
-	left: 0;
+  left: 0;
   width: 50%;
   opacity: 0;
-	z-index: 1;
+  z-index: 1;
 }
 .sign-in-container {
-	left: 0;
-	width: 50%;
-	z-index: 2;
+  left: 0;
+  width: 50%;
+  z-index: 2;
 }
 .overlay-container {
-	position: absolute;
-	top: 0;
-	left: 50%;
-	width: 50%;
-	height: 100%;
-	overflow: hidden;
-	transition: transform 0.6s ease-in-out;
-	z-index: 100;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+  transition: transform 0.6s ease-in-out;
+  z-index: 100;
 }
 .overlay {
-	background: #bbb8b9;
-	background: -webkit-linear-gradient(to right, #2e2b2b, #1b1919);
-	background: linear-gradient(to right, #524f4e, #f07692);
-	background-repeat: no-repeat;
-	background-size: cover;
-	background-position: 0 0;
-	color: #FFFFFF;
-	position: relative;
-	left: -100%;
-	height: 100%;
-	width: 200%;
+  background: #bbb8b9;
+  background: -webkit-linear-gradient(to right, #2e2b2b, #1b1919);
+  background: linear-gradient(to right, #524f4e, #f07692);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 0 0;
+  color: #ffffff;
+  position: relative;
+  left: -100%;
+  height: 100%;
+  width: 200%;
   transform: translateX(0);
-	transition: transform 0.6s ease-in-out;
+  transition: transform 0.6s ease-in-out;
 }
 
 .overlay-panel {
-	position: absolute;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	flex-direction: column;
-	padding: 0 40px;
-	text-align: center;
-	top: 0;
-	height: 100%;
-	width: 50%;
-	transform: translateX(0);
-	transition: transform 0.6s ease-in-out;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0 40px;
+  text-align: center;
+  top: 0;
+  height: 100%;
+  width: 50%;
+  transform: translateX(0);
+  transition: transform 0.6s ease-in-out;
 }
 .overlay-left {
-	transform: translateX(-20%);
+  transform: translateX(-20%);
 }
 .overlay-right {
-	right: 0;
-	transform: translateX(0);
+  right: 0;
+  transform: translateX(0);
 }
 
 /* animation */
@@ -309,20 +307,20 @@ button.ghost {
 /* move sign to the right */
 .container.right-panel-active .sign-in-container {
   transform: translateX(100%);
-	opacity: 0;
-	display: none;
+  opacity: 0;
+  display: none;
 }
 
 /* move overlay to left*/
-.container.right-panel-active .overlay-container{
-	transform: translateX(-100%);
+.container.right-panel-active .overlay-container {
+  transform: translateX(-100%);
 }
 
 /* bring sign up over sign in */
 .container.right-panel-active .sign-up-container {
-	transform: translateX(100%);
-	opacity: 1;
-	z-index: 0;
+  transform: translateX(100%);
+  opacity: 1;
+  z-index: 0;
 }
 
 /* move overlay back to right */
@@ -330,8 +328,72 @@ button.ghost {
   transform: translateX(50%);
 }
 .container.right-panel-active .overlay-left {
-	transform: translateX(0);
+  transform: translateX(0);
 }
 .container.right-panel-active .overlay-right {
-	transform: translateX(20%);
+  transform: translateX(20%);
+}
+
+/* schedules table*/
+.tg {
+  border-collapse: collapse;
+  border-spacing: 0;
+  margin: 0px 15px;
+  width: 700px;
+}
+.tg td {
+  border-color: black;
+  border-style: solid;
+  border-width: 1px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  overflow: hidden;
+  padding: 10px 5px;
+  word-break: normal;
+}
+.tg th {
+  border-color: black;
+  border-style: solid;
+  border-width: 1px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  font-weight: normal;
+  overflow: hidden;
+  padding: 10px 5px;
+  word-break: normal;
+}
+.tg .tg-fymb {
+  border-color: inherit;
+  border-width: 2px;
+  border-style: double;
+  font-weight: bold;
+  text-align: center;
+  vertical-align: top;
+}
+.tg .tg-fymr {
+  border-color: inherit;
+  font-weight: bold;
+  text-align: center;
+  vertical-align: top;
+}
+.tg .tg-7btt {
+  border-color: inherit;
+  font-weight: bold;
+  text-align: center;
+  vertical-align: top;
+}
+.tg .tg-0pkx {
+  border-color: inherit;
+  text-align: center;
+  vertical-align: top;
+}
+.tg .tg-0pky {
+  border-color: inherit;
+  text-align: left;
+  vertical-align: top;
+}
+.tg .tg-0pkz {
+  border-color: inherit;
+  text-align: right;
+  vertical-align: top;
 }

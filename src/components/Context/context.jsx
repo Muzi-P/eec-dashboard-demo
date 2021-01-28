@@ -34,7 +34,8 @@ class InflowsProvider extends Component {
       edwaleniPS: {},
       maguduzaPS: {},
       config: {},
-      date: `${new Date().toDateString()} ${new Date().toTimeString()}`,
+      schedules: {},
+      date: `${new Date().toDateString()}`,
       months: [
         "January",
         "February",
@@ -113,7 +114,11 @@ class InflowsProvider extends Component {
     this.getAllModels();
     this.getCurrentUser();
     this.getAllPowerStations();
+    this.getCurrentSchedule();
   };
+  /**
+   * @description get all inflows
+   */
   getAllInflows = () => {
     axios
       .get(`${process.env.REACT_APP_API}/inflows`, this.state.config)
@@ -125,6 +130,9 @@ class InflowsProvider extends Component {
         this.setState({ isAuthenticated: false });
       });
   };
+  /**
+   * @description get all power stations
+   */
   getAllPowerStations = () => {
     axios
       .get(`${process.env.REACT_APP_API}/power-stations`, this.state.config)
@@ -135,7 +143,11 @@ class InflowsProvider extends Component {
         this.setState({ isAuthenticated: false });
       });
   };
+  /**
+   * @description format power stations
+   */
   formatStations = (stations) => {
+    this.setState({ powerStations: stations });
     stations.forEach((item) => {
       switch (item.Name) {
         case "Edwaleni Power Station":
@@ -153,6 +165,9 @@ class InflowsProvider extends Component {
     });
     this.setState({ loading: false });
   };
+  /**
+   * @description get all models
+   */
   getAllModels = () => {
     axios
       .get(`${process.env.REACT_APP_API}/models`, this.state.config)
@@ -161,6 +176,9 @@ class InflowsProvider extends Component {
         this.getAllModelNames(res.data);
       });
   };
+  /**
+   * @description get current user
+   */
   getCurrentUser = () => {
     axios
       .get(`${process.env.REACT_APP_API}/users/me`, this.state.config)
@@ -168,6 +186,9 @@ class InflowsProvider extends Component {
         this.setState({ user: res.data });
       });
   };
+  /**
+   * @description get all active inflows years
+   */
   getAllYears = (inflows) => {
     let years = [];
     inflows.forEach((item) => {
@@ -177,14 +198,35 @@ class InflowsProvider extends Component {
     this.setState({ years });
     this.setState({ gs15ReviewYears: years });
   };
+  /**
+   * @description format model names
+   */
   getAllModelNames = (models) => {
     let modelNames = [];
     models.forEach((item) => {
       modelNames.push(item.Model_Name);
     });
     this.setState({ modelNames });
+    // set default model
+    this.setState({ reviewModels: [modelNames[0]] });
   };
-
+  /**
+   * @description get current schedules
+   */
+  getCurrentSchedule = (date = new Date()) => {
+    axios
+      .get(
+        `${process.env.REACT_APP_API}/schedules/${this.formatDate(date)}`,
+        this.state.config
+      )
+      .then((res) => {
+        this.setState({ schedules: res.data });
+      })
+      .catch((res) => {
+        console.log(res);
+        this.setState({ schedules: [] });
+      });
+  };
   postToNode(inflows) {
     let config = {
       headers: {
@@ -528,7 +570,75 @@ class InflowsProvider extends Component {
       parseFloat(GS_2),
       parseFloat(Ferreira)
     );
+    this.storeSchedule(startDate);
   };
+  /**
+   * @description function to store schedules in backend
+   * @param startDate
+   */
+
+  storeSchedule = (startDate) => {
+    let powerStations = [];
+    let schedulesPostData = {};
+    schedulesPostData.Date = this.formatDate(startDate);
+    schedulesPostData["Power_Stations"] = [];
+    this.state.powerStations.forEach((item) => {
+      if (!powerStations.includes(item.Name)) {
+        powerStations.push(item.Name);
+      }
+    });
+    powerStations.forEach((powerStation) => {
+      let powerStationSchedule = {};
+      powerStationSchedule["Schedule"] = [];
+      powerStationSchedule.Name = powerStation;
+      this.state.currentSchedule.forEach((item) => {
+        if (item.Time !== "") {
+          powerStationSchedule["Schedule"].push({
+            Time: item.Time,
+            Period: item.Period,
+            Power: this.getPower(powerStation, item),
+          });
+        }
+      });
+      schedulesPostData["Power_Stations"].push(powerStationSchedule);
+    });
+
+    axios.post(
+      `${process.env.REACT_APP_API}/schedules`,
+      schedulesPostData,
+      this.state.config
+    );
+  };
+  /**
+   * @description match power generated to power station from schedules object
+   * @param powerStation
+   * @param hourlyGeneration
+   */
+  getPower = (powerStation, hourlyGeneration) => {
+    let power = "";
+    switch (powerStation) {
+      case "Edwaleni Power Station":
+        power = hourlyGeneration.EDWALENI;
+        break;
+      case "Ezulwini Power Station":
+        power = hourlyGeneration.EZULWINI;
+        break;
+      case "Maguduza Power Station":
+        power = hourlyGeneration.MAGUDUZA;
+        break;
+      default:
+        break;
+    }
+    return power;
+  };
+
+  /**
+   * @description the main function for schedulling
+   * @param startDate
+   * @param Luphohlo_Daily_Level
+   * @param GS_2
+   * @param Ferreira
+   */
   populateSchedule = (startDate, Luphohlo_Daily_Level, GS_2, Ferreira) => {
     const month = startDate.getMonth();
     const day = startDate.getDay();
@@ -863,7 +973,9 @@ class InflowsProvider extends Component {
     60 *
     60;
 
-  /*update summary */
+  /**
+   * @description update summary
+   * */
   updateSummary = async (text, value) => {
     const elementsIndex = this.state.summary.findIndex(
       (element) => element.text === text
@@ -875,7 +987,9 @@ class InflowsProvider extends Component {
     });
   };
 
-  /*post new inflows */
+  /**
+   * @description post new inflows
+   * */
   postInflow = (inflow) => {
     axios
       .post(`${process.env.REACT_APP_API}/inflows`, inflow, this.state.config)
@@ -887,7 +1001,9 @@ class InflowsProvider extends Component {
       })
       .catch((res) => console.log(res));
   };
-  /*edit rate flow */
+  /**
+   * @description edit rate flow
+   * */
   editRatedFlow = (powerStation) => {
     axios
       .patch(
@@ -1071,6 +1187,7 @@ class InflowsProvider extends Component {
           keepLoggedIn: this.keepLoggedIn,
           logOut: this.logOut,
           signUp: this.signUp,
+          getCurrentSchedule: this.getCurrentSchedule,
           editRatedFlow: this.editRatedFlow,
         }}
       >
