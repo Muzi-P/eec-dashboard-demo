@@ -306,32 +306,50 @@ const methods = {
     });
     return schedule;
   },
+  /**
+   * @description maguduza standard half load
+   * @param {*} schedule
+   */
   maguduzaStandardHalfLoad: (schedule) => {
     schedule.forEach((item) => {
       if (item.Period === "Standard") item.MAGUDUZA = "3";
     });
     return schedule;
   },
+  /**
+   * @description maguduza standard shut down
+   * @param {*} schedule
+   */
   maguduzaStandardShutDown: (schedule) => {
     schedule.forEach((item) => {
       if (item.Period === "Standard") item.MAGUDUZA = "0";
     });
     return schedule;
   },
-
-  /*****Maguduza off-Peak *********/
+  /**
+   * @description maguduza off peak full load
+   * @param {*} schedule
+   */
   maguduzaOffPeakFullLoad: (schedule) => {
     schedule.forEach((item) => {
       if (item.Period === "Off-Peak") item.MAGUDUZA = "5.6";
     });
     return schedule;
   },
+  /**
+   * @description maguduza off peak half load
+   * @param {*} schedule
+   */
   maguduzaOffPeakHalfLoad: (schedule) => {
     schedule.forEach((item) => {
       if (item.Period === "Off-Peak") item.MAGUDUZA = "3";
     });
     return schedule;
   },
+  /**
+   * @description maguduza off peak shut down
+   * @param {*} schedule
+   */
   maguduzaOffPeakShutDown: (schedule) => {
     schedule.forEach((item) => {
       if (item.Period === "Off-Peak") item.MAGUDUZA = "0";
@@ -339,14 +357,20 @@ const methods = {
     return schedule;
   },
 
-  /*****Maguduza ShutDown *********/
+  /**
+   * @description maguduza shutdown
+   * @param {*} schedule
+   */
   edwaShutDown: (schedule) => {
     schedule.forEach((item) => {
       item.MAGUDUZA = "0";
     });
     return schedule;
   },
-  /*****All Stations ShutDown *********/
+  /**
+   * @description all stations shutdown
+   * @param {*} schedule
+   */
   allShutDown: (schedule) => {
     schedule.forEach((item) => {
       item.MAGUDUZA = "0";
@@ -355,7 +379,10 @@ const methods = {
     });
     return schedule;
   },
-  /*****Calculate Sum *********/
+  /**
+   * @description calculate sum
+   * @param {*} schedule
+   */
   calcSum: (schedule) => {
     let ezulwiniSum = 0;
     let ezulwiniSumPeak = 0;
@@ -419,6 +446,14 @@ const methods = {
         item.MAGUDUZA = Math.round(maguduzaSumOffPeak * 10) / 10;
       }
     });
+    return schedule;
+  },
+  /**
+   * @description calculate sum for weekdays
+   * @param {*} schedule
+   */
+  calcWeekDaySum: (schedule) => {
+    console.log(schedule);
     return schedule;
   },
 };

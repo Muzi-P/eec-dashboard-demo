@@ -30,8 +30,12 @@ export class DatePickerCard extends Component {
       startDate: date,
     });
   };
+  handleExportSchedules = () => {
+    this.context.exportSchedules(this.state.startDate);
+  };
   render() {
     const { date } = this.context;
+    const { enableExport } = this.props;
     return (
       <Col md="12">
         <Card>
@@ -66,6 +70,14 @@ export class DatePickerCard extends Component {
               onClick={this.handleLoadSchedules}
             >
               Load Schedules
+            </Button>
+            <Button
+              className="btn-fill"
+              color="danger"
+              disabled={!enableExport}
+              onClick={this.handleExportSchedules}
+            >
+              Export Schedules
             </Button>
           </CardFooter>
         </Card>

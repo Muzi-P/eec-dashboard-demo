@@ -30,7 +30,7 @@ class Schedules extends React.Component {
       <>
         <div className="content">
           <Row>
-            <DatePickerCard />
+            <DatePickerCard enableExport={scheduleTables.length !== 0} />
             {scheduleTables.length !== 0 ? scheduleTables : <NoData />}
           </Row>
         </div>

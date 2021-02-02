@@ -7,6 +7,7 @@ import weekSunGenSchedule from "../../data/weekSunGenSchedule.json";
 import functions from "../../utils/functions";
 import swal from "sweetalert";
 import Cookies from "js-cookie";
+import FileDownload from "js-file-download";
 
 const InflowsContext = React.createContext();
 
@@ -1155,12 +1156,43 @@ class InflowsProvider extends Component {
     axios
       .post(`${process.env.REACT_APP_API}/users/logout`, {}, config)
       .then((res) => {
-        console.log(res);
         Cookies.remove("token");
         Cookies.set("loggedIn", false);
         this.setState({ isAuthenticated: false });
       })
       .catch((res) => console.log(res));
+  };
+  /**
+   * @description export shedules to excel files
+   * @param date export date
+   */
+
+  exportSchedules = (date) => {
+    // console.log(this.formatDate(date));
+    // axios
+    //   .get(
+    //     `${process.env.REACT_APP_API}/download-schedules/${this.formatDate(
+    //       date
+    //     )}`,
+    //     this.state.config
+    //   )
+    //   .then((res) => {
+    //     console.log(res);
+    //     // download(res.data, "test.xlsx");
+    //   });
+    axios({
+      url: `${process.env.REACT_APP_API}/download-schedules/${this.formatDate(
+        date
+      )}`,
+      data: {
+        date,
+      },
+      headers: this.state.config.headers,
+      method: "POST",
+      responseType: "blob", // Important
+    }).then((response) => {
+      FileDownload(response.data, "report.xlsx");
+    });
   };
   render() {
     return (
@@ -1187,6 +1219,7 @@ class InflowsProvider extends Component {
           keepLoggedIn: this.keepLoggedIn,
           logOut: this.logOut,
           signUp: this.signUp,
+          exportSchedules: this.exportSchedules,
           getCurrentSchedule: this.getCurrentSchedule,
           editRatedFlow: this.editRatedFlow,
         }}
