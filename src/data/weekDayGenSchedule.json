@@ -40,7 +40,9 @@
     "EZULWINI": 0,
     "EDWALENI": 0,
     "MAGUDUZA": 0,
-    "OffPeakSum": 0
+    "ezulwiniSumOffPeak": 0,
+    "edwaleniSumOffPeak": 0,
+    "maguduzaSumOffPeak": 0
   },
   {
     "Time": "6:00  -  7:00",
@@ -48,7 +50,9 @@
     "EZULWINI": 0,
     "EDWALENI": 0,
     "MAGUDUZA": 0,
-    "StndSum": 0
+    "ezulwiniSumStnd": 0,
+    "edwaleniSumStnd": 0,
+    "maguduzaSumStnd": 0
   },
   {
     "Time": "7:00  -  8:00",
@@ -70,7 +74,9 @@
     "EZULWINI": 0,
     "EDWALENI": 0,
     "MAGUDUZA": 0,
-    "PeakSum": 0
+    "ezulwiniSumPeak": 0,
+    "edwaleniSumPeak": 0,
+    "maguduzaSumPeak": 0
   },
   {
     "Time": "10:00  -  11:00",
@@ -127,7 +133,9 @@
     "EZULWINI": 0,
     "EDWALENI": 0,
     "MAGUDUZA": 0,
-    "StndSum": 0
+    "ezulwiniSumStnd": 0,
+    "edwaleniSumStnd": 0,
+    "maguduzaSumStnd": 0
   },
   {
     "Time": "18:00  -  19:00",
@@ -142,7 +150,9 @@
     "EZULWINI": 0,
     "EDWALENI": 0,
     "MAGUDUZA": 0,
-    "PeakSum": 0
+    "ezulwiniSumPeak": 0,
+    "edwaleniSumPeak": 0,
+    "maguduzaSumPeak": 0
   },
   {
     "Time": "20:00  -  21:00",
@@ -171,7 +181,9 @@
     "EZULWINI": 0,
     "EDWALENI": 0,
     "MAGUDUZA": 0,
-    "OffPeakSum": 0
+    "ezulwiniSumOffPeak": 0,
+    "edwaleniSumOffPeak": 0,
+    "maguduzaSumOffPeak": 0
   },
   {
     "Time": "",

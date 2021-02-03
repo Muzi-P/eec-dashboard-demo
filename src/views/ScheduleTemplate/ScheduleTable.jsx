@@ -13,17 +13,33 @@ export class ScheduleTable extends Component {
       },
     };
   }
+  handleTotals = (hour, period) => {
+    let powerStationName = this.props.powerStation.Name.split(
+      " "
+    )[0].toLowerCase();
+    let key = `${powerStationName}Sum${period}`;
+    return hour[key] ? hour[key] : "";
+  };
+  handleSums = (period) => {
+    let sum = "";
+    this.props.powerStation.totals.forEach((item) => {
+      if (item[period]) {
+        sum = item[period];
+      }
+    });
+    return sum;
+  };
   render() {
     const { powerStation, date } = this.props;
     let hourlyGeneration = powerStation.Schedule.map((hour, key) => {
       return (
-        <tr>
+        <tr key={key}>
           <td className="tg-0pkx">{hour.Time}</td>
           <td className="tg-0pky">{hour.Period}</td>
           <td className="tg-0pkz">{hour.Power}</td>
-          <td className="tg-0pky"></td>
-          <td className="tg-0pky"></td>
-          <td className="tg-0pky"></td>
+          <td className="tg-0pky">{this.handleTotals(hour, "Peak")}</td>
+          <td className="tg-0pky">{this.handleTotals(hour, "Stnd")}</td>
+          <td className="tg-0pky">{this.handleTotals(hour, "OffPeak")}</td>
         </tr>
       );
     });
@@ -70,6 +86,14 @@ export class ScheduleTable extends Component {
                     </td>
                   </tr>
                   {hourlyGeneration}
+                  <tr>
+                    <td className="tg-0pkx"></td>
+                    <td className="tg-0pky">Sum</td>
+                    <td className="tg-0pkz"></td>
+                    <td className="tg-0pky">{this.handleSums("peak")}</td>
+                    <td className="tg-0pky">{this.handleSums("standard")}</td>
+                    <td className="tg-0pky">{this.handleSums("off-peak")}</td>
+                  </tr>
                 </tbody>
               </table>
             </Row>
