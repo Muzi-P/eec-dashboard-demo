@@ -773,6 +773,11 @@ class InflowsProvider extends Component {
       }
     }
 
+    // calculate sum per hour periods
+    generatedSchedule = this.state.utils.methods.calcWeekDaySum(
+      generatedSchedule
+    );
+
     let finalDamVolume =
       DAILY_LUPHOHLO_INFLOW + INITIAL_LUPHOHLO_DAM_VOLUME - waterConsumed;
     finalDamVolume = this.volumeToPerc(finalDamVolume);
@@ -867,6 +872,7 @@ class InflowsProvider extends Component {
         generatedSchedule
       );
     }
+    // calculate sum per hour periods
     generatedSchedule = this.state.utils.methods.calcWeekDaySum(
       generatedSchedule
     );
@@ -890,6 +896,10 @@ class InflowsProvider extends Component {
       generatedSchedule
     );
     generatedSchedule = this.state.utils.methods.maguduzaPeakFullLoad(
+      generatedSchedule
+    );
+    // calculate sum per hour periods
+    generatedSchedule = this.state.utils.methods.calcWeekDaySum(
       generatedSchedule
     );
 
