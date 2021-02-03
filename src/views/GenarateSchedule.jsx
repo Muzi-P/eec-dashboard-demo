@@ -293,7 +293,7 @@ class GenerateSchedule extends Component {
                     className="btn-fill"
                     disabled={disabled}
                     color="primary"
-                    type="submit"
+                    type="button"
                     onClick={this.handleGenerateSchedule}
                   >
                     Generate Schedule
@@ -301,7 +301,7 @@ class GenerateSchedule extends Component {
                   <Button
                     className="btn-fill"
                     color="info"
-                    type="submit"
+                    type="button"
                     onClick={this.loadPreviousInflows}
                   >
                     Load Previous Inflows

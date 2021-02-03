@@ -340,6 +340,7 @@ button.ghost {
   border-spacing: 0;
   margin: 0px 15px;
   width: 700px;
+  color: white;
 }
 .tg td {
   border-color: black;
@@ -394,6 +395,9 @@ button.ghost {
 }
 .tg .tg-0pkz {
   border-color: inherit;
-  text-align: right;
+  text-align: center;
   vertical-align: top;
+}
+.swal-footer {
+  text-align: center;
 }

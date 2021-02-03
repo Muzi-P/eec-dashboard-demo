@@ -306,32 +306,50 @@ const methods = {
     });
     return schedule;
   },
+  /**
+   * @description maguduza standard half load
+   * @param {*} schedule
+   */
   maguduzaStandardHalfLoad: (schedule) => {
     schedule.forEach((item) => {
       if (item.Period === "Standard") item.MAGUDUZA = "3";
     });
     return schedule;
   },
+  /**
+   * @description maguduza standard shut down
+   * @param {*} schedule
+   */
   maguduzaStandardShutDown: (schedule) => {
     schedule.forEach((item) => {
       if (item.Period === "Standard") item.MAGUDUZA = "0";
     });
     return schedule;
   },
-
-  /*****Maguduza off-Peak *********/
+  /**
+   * @description maguduza off peak full load
+   * @param {*} schedule
+   */
   maguduzaOffPeakFullLoad: (schedule) => {
     schedule.forEach((item) => {
       if (item.Period === "Off-Peak") item.MAGUDUZA = "5.6";
     });
     return schedule;
   },
+  /**
+   * @description maguduza off peak half load
+   * @param {*} schedule
+   */
   maguduzaOffPeakHalfLoad: (schedule) => {
     schedule.forEach((item) => {
       if (item.Period === "Off-Peak") item.MAGUDUZA = "3";
     });
     return schedule;
   },
+  /**
+   * @description maguduza off peak shut down
+   * @param {*} schedule
+   */
   maguduzaOffPeakShutDown: (schedule) => {
     schedule.forEach((item) => {
       if (item.Period === "Off-Peak") item.MAGUDUZA = "0";
@@ -339,14 +357,20 @@ const methods = {
     return schedule;
   },
 
-  /*****Maguduza ShutDown *********/
+  /**
+   * @description maguduza shutdown
+   * @param {*} schedule
+   */
   edwaShutDown: (schedule) => {
     schedule.forEach((item) => {
       item.MAGUDUZA = "0";
     });
     return schedule;
   },
-  /*****All Stations ShutDown *********/
+  /**
+   * @description all stations shutdown
+   * @param {*} schedule
+   */
   allShutDown: (schedule) => {
     schedule.forEach((item) => {
       item.MAGUDUZA = "0";
@@ -355,7 +379,10 @@ const methods = {
     });
     return schedule;
   },
-  /*****Calculate Sum *********/
+  /**
+   * @description calculate sum
+   * @param {*} schedule
+   */
   calcSum: (schedule) => {
     let ezulwiniSum = 0;
     let ezulwiniSumPeak = 0;
@@ -417,6 +444,73 @@ const methods = {
         item.EZULWINI = ezulwiniSumOffPeak;
         item.EDWALENI = Math.round(edwaleniSumOffPeak * 10) / 10;
         item.MAGUDUZA = Math.round(maguduzaSumOffPeak * 10) / 10;
+      }
+    });
+    return schedule;
+  },
+  /**
+   * @description calculate sum for weekdays
+   * @param {*} schedule
+   */
+  calcWeekDaySum: (schedule) => {
+    let ezulwiniSumPeak = 0;
+    let ezulwiniSumStnd = 0;
+    let ezulwiniSumOffPeak = 0;
+
+    let edwaleniSumPeak = 0;
+    let edwaleniSumStnd = 0;
+    let edwaleniSumOffPeak = 0;
+
+    let maguduzaSumPeak = 0;
+    let maguduzaSumStnd = 0;
+    let maguduzaSumOffPeak = 0;
+    schedule.forEach((item) => {
+      if (item.Period === "Peak") {
+        ezulwiniSumPeak = ezulwiniSumPeak + parseInt(item.EZULWINI);
+        edwaleniSumPeak = edwaleniSumPeak + parseFloat(item.EDWALENI);
+        maguduzaSumPeak = maguduzaSumPeak + parseFloat(item.MAGUDUZA);
+        // item.EZULWINI = Math.round(ezulwiniSum * 10) / 10;
+
+        if ("ezulwiniSumPeak" in item) {
+          item["ezulwiniSumPeak"] = Math.round(ezulwiniSumPeak * 10) / 10;
+          item["edwaleniSumPeak"] = Math.round(edwaleniSumPeak * 10) / 10;
+          item["maguduzaSumPeak"] = Math.round(maguduzaSumPeak * 10) / 10;
+
+          ezulwiniSumPeak = 0;
+          edwaleniSumPeak = 0;
+          maguduzaSumPeak = 0;
+        }
+      }
+      if (item.Period === "Standard") {
+        ezulwiniSumStnd = ezulwiniSumStnd + parseInt(item.EZULWINI);
+        edwaleniSumStnd = edwaleniSumStnd + parseFloat(item.EDWALENI);
+        maguduzaSumStnd = maguduzaSumStnd + parseFloat(item.MAGUDUZA);
+
+        if ("ezulwiniSumStnd" in item) {
+          item["ezulwiniSumStnd"] = Math.round(ezulwiniSumStnd * 10) / 10;
+          item["edwaleniSumStnd"] = Math.round(edwaleniSumStnd * 10) / 10;
+          item["maguduzaSumStnd"] = Math.round(maguduzaSumStnd * 10) / 10;
+
+          ezulwiniSumStnd = 0;
+          edwaleniSumStnd = 0;
+          maguduzaSumStnd = 0;
+        }
+      }
+
+      if (item.Period === "Off-Peak") {
+        ezulwiniSumOffPeak = ezulwiniSumOffPeak + parseInt(item.EZULWINI);
+        edwaleniSumOffPeak = edwaleniSumOffPeak + parseFloat(item.EDWALENI);
+        maguduzaSumOffPeak = maguduzaSumOffPeak + parseFloat(item.MAGUDUZA);
+
+        if ("ezulwiniSumOffPeak" in item) {
+          item["ezulwiniSumOffPeak"] = Math.round(ezulwiniSumOffPeak * 10) / 10;
+          item["edwaleniSumOffPeak"] = Math.round(edwaleniSumOffPeak * 10) / 10;
+          item["maguduzaSumOffPeak"] = Math.round(maguduzaSumOffPeak * 10) / 10;
+
+          ezulwiniSumOffPeak = 0;
+          edwaleniSumOffPeak = 0;
+          maguduzaSumOffPeak = 0;
+        }
       }
     });
     return schedule;

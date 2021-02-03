@@ -7,7 +7,7 @@ import weekSunGenSchedule from "../../data/weekSunGenSchedule.json";
 import functions from "../../utils/functions";
 import swal from "sweetalert";
 import Cookies from "js-cookie";
-
+import FileDownload from "js-file-download";
 const InflowsContext = React.createContext();
 
 class InflowsProvider extends Component {
@@ -590,6 +590,7 @@ class InflowsProvider extends Component {
     powerStations.forEach((powerStation) => {
       let powerStationSchedule = {};
       powerStationSchedule["Schedule"] = [];
+      let totals = [];
       powerStationSchedule.Name = powerStation;
       this.state.currentSchedule.forEach((item) => {
         if (item.Time !== "") {
@@ -597,9 +598,40 @@ class InflowsProvider extends Component {
             Time: item.Time,
             Period: item.Period,
             Power: this.getPower(powerStation, item),
+            ezulwiniSumPeak:
+              item["ezulwiniSumPeak"] >= 0 ? item["ezulwiniSumPeak"] : null,
+            ezulwiniSumStnd:
+              item["ezulwiniSumStnd"] >= 0 ? item["ezulwiniSumStnd"] : null,
+            ezulwiniSumOffPeak:
+              item["ezulwiniSumOffPeak"] >= 0
+                ? item["ezulwiniSumOffPeak"]
+                : null,
+            edwaleniSumPeak:
+              item["edwaleniSumPeak"] >= 0 ? item["edwaleniSumPeak"] : null,
+            edwaleniSumStnd:
+              item["edwaleniSumStnd"] >= 0 ? item["edwaleniSumStnd"] : null,
+            edwaleniSumOffPeak:
+              item["edwaleniSumOffPeak"] >= 0
+                ? item["edwaleniSumOffPeak"]
+                : null,
+            maguduzaSumPeak:
+              item["maguduzaSumPeak"] >= 0 ? item["maguduzaSumPeak"] : null,
+            maguduzaSumStnd:
+              item["maguduzaSumStnd"] >= 0 ? item["maguduzaSumStnd"] : null,
+            maguduzaSumOffPeak:
+              item["maguduzaSumOffPeak"] >= 0
+                ? item["maguduzaSumOffPeak"]
+                : null,
           });
+        } else {
+          let stationKey = powerStation.split(" ")[0].toUpperCase();
+          let objectKey = item.Period.toLowerCase();
+          let sumObject = {};
+          sumObject[objectKey] = item[stationKey];
+          totals.push(sumObject);
         }
       });
+      powerStationSchedule["totals"] = totals;
       schedulesPostData["Power_Stations"].push(powerStationSchedule);
     });
 
@@ -835,6 +867,9 @@ class InflowsProvider extends Component {
         generatedSchedule
       );
     }
+    generatedSchedule = this.state.utils.methods.calcWeekDaySum(
+      generatedSchedule
+    );
     await this.setState({ currentSchedule: generatedSchedule });
   };
   populateScheduleWeekDayPeakSeason = async (Luphohlo_Daily_Level) => {
@@ -1155,12 +1190,43 @@ class InflowsProvider extends Component {
     axios
       .post(`${process.env.REACT_APP_API}/users/logout`, {}, config)
       .then((res) => {
-        console.log(res);
         Cookies.remove("token");
         Cookies.set("loggedIn", false);
         this.setState({ isAuthenticated: false });
       })
       .catch((res) => console.log(res));
+  };
+  /**
+   * @description export shedules to excel files
+   * @param date export date
+   */
+
+  exportSchedules = (date) => {
+    // console.log(this.formatDate(date));
+    // axios
+    //   .get(
+    //     `${process.env.REACT_APP_API}/download-schedules/${this.formatDate(
+    //       date
+    //     )}`,
+    //     this.state.config
+    //   )
+    //   .then((res) => {
+    //     console.log(res);
+    //     // download(res.data, "test.xlsx");
+    //   });
+    axios({
+      url: `${process.env.REACT_APP_API}/download-schedules/${this.formatDate(
+        date
+      )}`,
+      data: {
+        date,
+      },
+      headers: this.state.config.headers,
+      method: "POST",
+      responseType: "blob", // Important
+    }).then((response) => {
+      FileDownload(response.data, "report.xlsx");
+    });
   };
   render() {
     return (
@@ -1187,6 +1253,7 @@ class InflowsProvider extends Component {
           keepLoggedIn: this.keepLoggedIn,
           logOut: this.logOut,
           signUp: this.signUp,
+          exportSchedules: this.exportSchedules,
           getCurrentSchedule: this.getCurrentSchedule,
           editRatedFlow: this.editRatedFlow,
         }}
