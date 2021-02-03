@@ -1062,11 +1062,11 @@ class InflowsProvider extends Component {
       .catch((res) => console.log(res));
   };
 
-  alert = (title, text) => {
+  alert = (title, text, icon = "success") => {
     swal({
       title,
       text,
-      icon: "success",
+      icon,
       button: "Okay",
     }).then(() => {
       this.getAllInflows();
@@ -1160,7 +1160,9 @@ class InflowsProvider extends Component {
       .then(() => {
         this.init();
       })
-      .catch((res) => console.log(res));
+      .catch((res) => {
+        this.alert("Sign In Error", "Incorrect Credentials", "error");
+      });
   };
   signUp = (loginInfo) => {
     axios
