@@ -57,7 +57,7 @@ export class Maguduza extends Component {
     return (
       <>
         {!loading && (
-          <Col md="6">
+          <Col md="12" lg="12" xl="6">
             <Card>
               <CardHeader>
                 <h5 className="title">{maguduzaPS.Name}</h5>

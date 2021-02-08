@@ -10,7 +10,7 @@ export default class PreviousInflows extends Component {
   render() {
     return (
       <>
-        <Col md="7">
+        <Col md="12" lg="12" xl="7">
           <Card>
             <CardHeader>
               {this.context.selectedModel.length !== 0 && (

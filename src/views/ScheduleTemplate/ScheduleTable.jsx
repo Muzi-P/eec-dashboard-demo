@@ -44,7 +44,7 @@ export class ScheduleTable extends Component {
       );
     });
     return (
-      <Col md="6">
+      <Col md="12" lg="12" xl="6">
         <Card>
           <CardHeader>
             <h5 className="title">Power Station: {powerStation.Name}</h5>
@@ -52,50 +52,52 @@ export class ScheduleTable extends Component {
           </CardHeader>
           <CardBody>
             <Row>
-              <table className="tg">
-                <thead>
-                  <tr>
-                    <th className="tg-fymb" colSpan="3">
-                      Power Generation
-                    </th>
-                    <th className="tg-fymb" colSpan="3">
-                      Total Energy Production
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td className="tg-fymr">Time</td>
-                    <td className="tg-fymr">Period</td>
-                    <td className="tg-7btt">
-                      Generation <br /> [MW]
-                    </td>
-                    <td className="tg-fymr">
-                      Peak
-                      <br />
-                      [MWh]
-                    </td>
-                    <td className="tg-7btt">
-                      Standard <br />
-                      [Mwh]
-                    </td>
-                    <td className="tg-7btt">
-                      Off-Peak
-                      <br />
-                      [MWh]
-                    </td>
-                  </tr>
-                  {hourlyGeneration}
-                  <tr>
-                    <td className="tg-0pkx"></td>
-                    <td className="tg-0pky">Sum</td>
-                    <td className="tg-0pkz"></td>
-                    <td className="tg-0pky">{this.handleSums("peak")}</td>
-                    <td className="tg-0pky">{this.handleSums("standard")}</td>
-                    <td className="tg-0pky">{this.handleSums("off-peak")}</td>
-                  </tr>
-                </tbody>
-              </table>
+              <Col>
+                <table className="tg">
+                  <thead>
+                    <tr>
+                      <th className="tg-fymb" colSpan="3">
+                        Power Generation
+                      </th>
+                      <th className="tg-fymb" colSpan="3">
+                        Total Energy Production
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="tg-fymr">Time</td>
+                      <td className="tg-fymr">Period</td>
+                      <td className="tg-7btt">
+                        Generation <br /> [MW]
+                      </td>
+                      <td className="tg-fymr">
+                        Peak
+                        <br />
+                        [MWh]
+                      </td>
+                      <td className="tg-7btt">
+                        Standard <br />
+                        [Mwh]
+                      </td>
+                      <td className="tg-7btt">
+                        Off-Peak
+                        <br />
+                        [MWh]
+                      </td>
+                    </tr>
+                    {hourlyGeneration}
+                    <tr>
+                      <td className="tg-0pkx"></td>
+                      <td className="tg-0pky">Sum</td>
+                      <td className="tg-0pkz"></td>
+                      <td className="tg-0pky">{this.handleSums("peak")}</td>
+                      <td className="tg-0pky">{this.handleSums("standard")}</td>
+                      <td className="tg-0pky">{this.handleSums("off-peak")}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </Col>
             </Row>
           </CardBody>
         </Card>

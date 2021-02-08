@@ -63,7 +63,7 @@ class DrainageModel extends Component {
       <>
         <div className="content">
           <Row>
-            <Col md="5">
+            <Col md="12" lg="12" xl="5">
               <Card>
                 <CardHeader>
                   <h4 className="title">DRAINAGE MODELS</h4>

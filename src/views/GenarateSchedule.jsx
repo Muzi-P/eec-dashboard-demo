@@ -168,7 +168,7 @@ class GenerateSchedule extends Component {
       <>
         <div className="content">
           <Row>
-            <Col md="6">
+            <Col md="12" lg="12" xl="6">
               <Card>
                 <CardHeader>
                   <h4 className="title">ENTER INFLOWS</h4>
@@ -177,24 +177,26 @@ class GenerateSchedule extends Component {
                 <CardBody>
                   <Form>
                     <Row>
-                      <Col className="pr-md-1 calender" md="4">
+                      <Col className="pr-md-1 calender" md="12" lg="4">
                         <FormGroup>
                           <label htmlFor="exampleInputEmail1">
                             Select Date:
                           </label>
-                          <KeyboardDatePicker
-                            autoOk
-                            variant="inline"
-                            inputVariant="outlined"
-                            format="MM/dd/yyyy"
-                            views={["year", "month", "date"]}
-                            value={this.state.startDate}
-                            InputAdornmentProps={{ position: "start" }}
-                            onChange={(date) => this.handleChange(date)}
-                          />
+                          <div>
+                            <KeyboardDatePicker
+                              autoOk
+                              variant="inline"
+                              inputVariant="outlined"
+                              format="MM/dd/yyyy"
+                              views={["year", "month", "date"]}
+                              value={this.state.startDate}
+                              InputAdornmentProps={{ position: "start" }}
+                              onChange={(date) => this.handleChange(date)}
+                            />
+                          </div>
                         </FormGroup>
                       </Col>
-                      <Col className="pr-md-1" md="3">
+                      <Col className="pr-md-1" md="6" lg="4">
                         <FormGroup>
                           <label htmlFor="exampleInputEmail1">
                             Select Model:

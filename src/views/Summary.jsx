@@ -9,7 +9,7 @@ export default class DailySummary extends Component {
     const { summary } = this.context;
     return (
       <>
-        <Col md="6">
+        <Col md="12" lg="12" xl="6">
           <Card>
             <CardHeader>
               <CardTitle tag="h4">Water Usage Summary</CardTitle>

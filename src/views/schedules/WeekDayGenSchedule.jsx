@@ -45,7 +45,7 @@ export default class WeekDayGenSchedule extends Component {
     const { columns, date } = this.state;
     return (
       <>
-        <Col md="6">
+        <Col md="12" lg="12" xl="6">
           <Card className="card-user">
             <CardHeader>
               <CardTitle tag="h4">Daily Generation Schedule</CardTitle>

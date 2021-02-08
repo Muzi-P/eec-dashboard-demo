@@ -28,7 +28,7 @@ class Footer extends React.Component {
     return (
       <footer className="footer">
         <Container fluid>
-          <Nav>
+          {/* <Nav>
             <NavItem>
               <NavLink href="javascript:void(0)">LEGACY INC</NavLink>
             </NavItem>
@@ -38,18 +38,24 @@ class Footer extends React.Component {
             <NavItem>
               <NavLink href="javascript:void(0)">Blog</NavLink>
             </NavItem>
-          </Nav>
+          </Nav> */}
           <div className="copyright">
-            © {new Date().getFullYear()} made with{" "}
-            <i className="tim-icons icon-heart-2" /> by{" "}
+            © {`${new Date().getFullYear()} developed by `} 
             <a
-              href="javascript:void(0)"
+              href="https://muzi-gondwe.netlify.app/"
               rel="noopener noreferrer"
               target="_blank"
             >
               Muzi Gondwe
             </a>{" "}
-            for a better web.
+            and
+            <a
+              href="https://www.linkedin.com/in/mbongiseni-dlamini-69a7b126/"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Mbongiseni Dlamini
+            </a>{" "}
           </div>
         </Container>
       </footer>
