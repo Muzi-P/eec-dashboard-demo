@@ -469,6 +469,10 @@ class InflowsProvider extends Component {
 
     return (sum / arr.length).toFixed(2);
   };
+  /**
+   * @description change schedule template as per day of the week
+   * @param {*} date date of scheduling
+   */
   handleForecastDateChange = (date) => {
     let day = date.getDay();
     if (day === 6) {
@@ -483,16 +487,22 @@ class InflowsProvider extends Component {
       this.setState({ currentSchedule: this.state.weekDayGenSchedule });
     }
   };
-  formatDate = (date) => {
+  /**
+   * @description format date string date type ---> "yyyy-mm-dd" or "yyyy,mm,dd"
+   * @param {*} date
+   * @param {*} commaSeparated if true return yyyy,mm,dd
+   */
+  formatDate = (date, commaSeparated = false) => {
     var d = new Date(date),
       month = "" + (d.getMonth() + 1),
       day = "" + d.getDate(),
       year = d.getFullYear();
-
     if (month.length < 2) month = "0" + month;
     if (day.length < 2) day = "0" + day;
 
-    return [year, month, day].join("-");
+    return commaSeparated
+      ? [2016, month, day].join(",")
+      : [year, month, day].join("-");
   };
   volumeToPerc = (volume) => ((volume / 23600000) * 100).toFixed(2);
   generateSchedule = async (state) => {
@@ -524,7 +534,14 @@ class InflowsProvider extends Component {
       "Current Month",
       this.state.months[startDate.getMonth()]
     );
-    let limit = this.state.currentModel[0].Opt[startDate.getMonth()].y;
+    let dateString = this.formatDate(startDate, true);
+    let limit = "";
+    this.state.currentModel[0].Opt.forEach((item) => {
+      if (item.x === dateString) {
+        limit = item.y;
+        return false;
+      }
+    });
     const dayVolume = this.state.utils.methods.levelToVol(
       parseFloat(Luphohlo_Daily_Level)
     );
