@@ -20,11 +20,11 @@ export default class ViewModel extends Component {
     super();
     this.state = {
       columns: [
-        { title: "Month", field: "month" },
-        { title: "Min", field: "min" },
-        { title: "Opt", field: "opt" },
-        { title: "Max", field: "max" },
-        { title: "Dam Level (%)", field: "perc" },
+        { title: "Month", field: "month", editable: "never" },
+        { title: "Min", field: "min", type: "numeric" },
+        { title: "Opt", field: "opt", type: "numeric" },
+        { title: "Max", field: "max", type: "numeric" },
+        { title: "Dam Level (%)", field: "perc", editable: "never" },
       ],
       data: [],
       edit: [],
@@ -98,7 +98,8 @@ export default class ViewModel extends Component {
   };
 
   render() {
-    const { columns, data, model } = this.state;
+    const { columns, model } = this.state;
+    const { data } = this.props;
     return (
       <>
         <Col md="12">

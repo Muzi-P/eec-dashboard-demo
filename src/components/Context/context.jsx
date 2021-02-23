@@ -50,6 +50,20 @@ class InflowsProvider extends Component {
         "November",
         "December",
       ],
+      shortMonths: [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ],
       weekDayGenSchedule: weekDayGenSchedule,
       weekEndGenSchedule: weekEndGenSchedule,
       weekSunGenSchedule: weekSunGenSchedule,
@@ -209,6 +223,7 @@ class InflowsProvider extends Component {
     this.setState({ modelNames });
     // set default model
     this.setState({ reviewModels: [modelNames[0]] });
+    this.handleDrainageModelChange(modelNames[0]);
   };
   /**
    * @description get current schedules
@@ -278,7 +293,7 @@ class InflowsProvider extends Component {
     let result = {};
     let dataPoints = singleYearInflows.map((inflow) => {
       let year = inflow.Day_of_Input.split("-");
-      year[0] = "2010";
+      year[0] = "2016";
       let newDay_of_Input = year.join("-");
       let data = {
         x: new Date(newDay_of_Input),
@@ -1074,6 +1089,10 @@ class InflowsProvider extends Component {
       this.getAllModels();
     });
   };
+  /**
+   * @description handle when user selects model in drop down
+   * @param {*} modelName
+   */
   /********Drainage model*****/
   handleDrainageModelChange = (modelName) => {
     this.setState({ reviewModels: [modelName] });
@@ -1083,23 +1102,32 @@ class InflowsProvider extends Component {
     this.setState({ currentModel: selectedModel });
     let model = [];
     selectedModel[0].Max.forEach((item, index) => {
-      let volume = this.state.utils.methods.levelToVol(
-        parseInt(selectedModel[0].Opt[index].y)
-      );
-      let perc = this.state.utils.methods.volToPerc(volume);
-      let singleMonth = {
-        month: item.month,
-        max: item.y,
-        min: selectedModel[0].Min[index].y,
-        opt: selectedModel[0].Opt[index].y,
-        perc: perc,
-      };
-      model.push(singleMonth);
+      let day = item.x.split(",")[2];
+      let date = new Date(item.x);
+      if (day === "15") {
+        let volume = this.state.utils.methods.levelToVol(
+          parseInt(selectedModel[0].Opt[index].y)
+        );
+        let perc = this.state.utils.methods.volToPerc(volume);
+        let singleMonth = {
+          max: item.y,
+          min: selectedModel[0].Min[index].y,
+          opt: selectedModel[0].Opt[index].y,
+          month: this.state.months[date.getMonth()],
+          day: item.x,
+          perc,
+        };
+        model.push(singleMonth);
+      }
     });
     this.setState({ selectedModel: model });
   };
-
-  /*updating models */
+  /**
+   * @description update model
+   * @param {*} edit
+   * @param {*} current
+   * @param {*} name
+   */
   updateModel = (edit, current, name) => {
     let currentModel = current;
     edit.forEach((item, index) => {
