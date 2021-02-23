@@ -52,7 +52,7 @@ export class DatePickerCard extends Component {
                       autoOk
                       variant="inline"
                       inputVariant="outlined"
-                      format="MM/dd/yyyy"
+                      format="dd/MM/yyyy"
                       views={["year", "month", "date"]}
                       value={this.state.startDate}
                       InputAdornmentProps={{ position: "start" }}
