@@ -354,7 +354,7 @@ class InflowsProvider extends Component {
       return singleYearDataPoint;
     });
     let data = this.singleModelDataPoint(
-      "model",
+      "default-model",
       defaultModel.defaultModel.opt(),
       defaultModel.defaultModel.min(),
       defaultModel.defaultModel.max()
@@ -1112,7 +1112,6 @@ class InflowsProvider extends Component {
    */
   /********Drainage model*****/
   handleDrainageModelChange = (modelName) => {
-    this.setState({ reviewModels: [modelName] });
     let selectedModel = this.state.models.filter(
       (model) => model.Model_Name === modelName
     );

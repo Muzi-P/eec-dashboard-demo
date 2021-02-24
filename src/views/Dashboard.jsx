@@ -78,12 +78,12 @@ class Dashboard extends Component {
             onChange={(e) => this.handleModelChange(e)}
             value={model}
             key={model}
+            checked={reviewModels.includes(model)}
           />
           {model}
         </InputGroupText>
       );
     });
-
     return (
       <>
         <div className="content">
