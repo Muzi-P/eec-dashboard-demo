@@ -48,14 +48,6 @@ class Footer extends React.Component {
             >
               Muzi Gondwe
             </a>{" "}
-            and
-            <a
-              href="https://www.linkedin.com/in/mbongiseni-dlamini-69a7b126/"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              Mbongiseni Dlamini
-            </a>{" "}
           </div>
         </Container>
       </footer>
