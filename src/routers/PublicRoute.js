@@ -12,11 +12,10 @@ export class PublicRoute extends Component {
   render() {
     const { path, render } = this.props;
     const { isAuthenticated } = this.context;
-    const pathHistory = Cookies.get("current_route");
     return (
       <div>
         {isAuthenticated ? (
-          <Redirect to={pathHistory} />
+          <Redirect to="/admin/dashboard" />
         ) : (
           <Route path={path} render={render} />
         )}

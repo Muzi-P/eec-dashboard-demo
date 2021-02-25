@@ -1112,6 +1112,7 @@ class InflowsProvider extends Component {
    */
   /********Drainage model*****/
   handleDrainageModelChange = (modelName) => {
+    this.setState({ reviewModels: [modelName] });
     let selectedModel = this.state.models.filter(
       (model) => model.Model_Name === modelName
     );

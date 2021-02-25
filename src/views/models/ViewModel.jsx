@@ -175,7 +175,7 @@ export default class ViewModel extends Component {
                 className="btn-fill"
                 color="success"
                 onClick={this.handleSaveModel}
-                disabled={!this.state.canSave}
+                disabled
               >
                 Save Model
               </Button>
@@ -183,7 +183,7 @@ export default class ViewModel extends Component {
                 className="btn-fill"
                 color="danger"
                 onClick={this.deleteModel}
-                disabled={this.props.disable}
+                disabled
               >
                 Delete Model
               </Button>

@@ -134,7 +134,7 @@ export class Maguduza extends Component {
                   color="primary"
                   type="submit"
                   onClick={this.handleRatedFlowChange}
-                  disabled={disabled}
+                  disabled
                 >
                   Save
                 </Button>

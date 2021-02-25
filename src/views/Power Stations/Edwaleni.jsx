@@ -177,7 +177,7 @@ export class Edwaleni extends Component {
                   color="primary"
                   type="submit"
                   onClick={this.handleRatedFlowChange}
-                  disabled={disabled}
+                  disabled
                 >
                   Save
                 </Button>

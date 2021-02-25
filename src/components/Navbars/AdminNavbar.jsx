@@ -17,9 +17,9 @@
 */
 import React from "react";
 // nodejs library that concatenates classes
+import { NavLink as ReactNavLink } from "react-router-dom";
 import classNames from "classnames";
 import { InflowsContext } from "../Context/context";
-
 // reactstrap components
 import {
   Button,
@@ -91,6 +91,9 @@ class AdminNavbar extends React.Component {
   logOut = () => {
     this.context.logOut();
   };
+  navigate = (path) => {
+    // this.props.history.push(path);
+  };
   render() {
     return (
       <>
@@ -161,27 +164,22 @@ class AdminNavbar extends React.Component {
                   <DropdownMenu className="dropdown-navbar" right tag="ul">
                     <NavLink tag="li">
                       <DropdownItem className="nav-item">
-                        Mike John responded to your email
+                        Purchased chemicals for water treatment plant.
                       </DropdownItem>
                     </NavLink>
                     <NavLink tag="li">
                       <DropdownItem className="nav-item">
-                        You have 5 more tasks
+                        Gen 2 out for maintenance
                       </DropdownItem>
                     </NavLink>
                     <NavLink tag="li">
                       <DropdownItem className="nav-item">
-                        Your friend Michael is in town
+                        relay circuit faulty in gen 2
                       </DropdownItem>
                     </NavLink>
                     <NavLink tag="li">
                       <DropdownItem className="nav-item">
-                        Another notification
-                      </DropdownItem>
-                    </NavLink>
-                    <NavLink tag="li">
-                      <DropdownItem className="nav-item">
-                        Another one
+                        SERA training today
                       </DropdownItem>
                     </NavLink>
                   </DropdownMenu>
@@ -204,15 +202,15 @@ class AdminNavbar extends React.Component {
                     <p className="d-lg-none">Log out</p>
                   </DropdownToggle>
                   <DropdownMenu className="dropdown-navbar" right tag="ul">
-                    <NavLink tag="li">
+                    <ReactNavLink tag="li" to="/admin/user-profile">
                       <DropdownItem className="nav-item">Profile</DropdownItem>
-                    </NavLink>
-                    <NavLink tag="li">
+                    </ReactNavLink>
+                    <ReactNavLink tag="li" to="/admin/settings">
                       <DropdownItem className="nav-item">Settings</DropdownItem>
-                    </NavLink>
-                    <NavLink tag="li">
+                    </ReactNavLink>
+                    {/* <ReactNavLink tag="li" onClick={this.navigate("user-profile")}>
                       <DropdownItem className="nav-item">Theme</DropdownItem>
-                    </NavLink>
+                    </ReactNavLink> */}
                     <DropdownItem divider tag="li" />
                     <NavLink tag="li">
                       <DropdownItem onClick={this.logOut} className="nav-item">

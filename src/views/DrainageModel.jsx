@@ -98,6 +98,7 @@ class DrainageModel extends Component {
                           className="btn-fill"
                           color="primary"
                           onClick={this.show}
+                          disabled
                         >
                           New Model
                         </Button>
